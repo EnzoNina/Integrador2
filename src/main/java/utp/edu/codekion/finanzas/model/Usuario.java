@@ -3,8 +3,7 @@ package utp.edu.codekion.finanzas.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +15,10 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
 @Table(name = "usuarios")
+@AllArgsConstructor
 public class Usuario  implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +50,7 @@ public class Usuario  implements UserDetails {
     @NotNull
     @Column(name = "password", nullable = false, length = 50)
     private String password;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>utp.edu.codekion.finanzas.FinanzasApplication</OriginalElement>
+  <nodes>
+    <node x="792.0" y="2251.0">utp.edu.codekion.finanzas.repository.UsuarioRepository</node>
+    <node x="1626.5" y="3012.5">utp.edu.codekion.finanzas.config.ApplicationConfig</node>
+    <node x="837.5" y="3084.0">utp.edu.codekion.finanzas.service.IService</node>
+    <node x="1523.0" y="941.0">utp.edu.codekion.finanzas.model.Frecuencia</node>
+    <node x="-112.5" y="999.0">utp.edu.codekion.finanzas.FinanzasApplication</node>
+    <node x="-215.0" y="2251.0">utp.edu.codekion.finanzas.exception.TokenExpiradoException</node>
+    <node x="1109.0" y="2417.0">utp.edu.codekion.finanzas.model.Transacciones.TransaccionesBuilder</node>
+    <node x="1193.0" y="104.0">utp.edu.codekion.finanzas.config.filter</node>
+    <node x="287.5" y="1499.5">utp.edu.codekion.finanzas.model.ResumenTransacciones</node>
+    <node x="511.5" y="2251.0">utp.edu.codekion.finanzas.exception.NoTokenJwtException</node>
+    <node x="918.0" y="446.5">utp.edu.codekion.finanzas.model.Categoria</node>
+    <node x="121.5" y="3012.5">utp.edu.codekion.finanzas.exception.GlobalExceptionHandler</node>
+    <node x="-58.5" y="1534.0">utp.edu.codekion.finanzas.model.Cuenta</node>
+    <node x="303.0" y="481.0">utp.edu.codekion.finanzas.model.TipoCuenta</node>
+    <node x="698.0" y="2684.0">utp.edu.codekion.finanzas.repository.TransaccionRepository</node>
+    <node x="171.5" y="837.5">utp.edu.codekion.finanzas.model.Banco</node>
+    <node x="1149.0" y="1442.0">utp.edu.codekion.finanzas.model.Transacciones</node>
+    <node x="1411.5" y="244.0">utp.edu.codekion.finanzas.service.impl</node>
+    <node x="943.0" y="161.0">utp.edu.codekion.finanzas.model.TipoTransaccion</node>
+    <node x="-6.0" y="-281.0">utp.edu.codekion.finanzas.exception.CustomAccessDeniedHandle</node>
+    <node x="16.0" y="-107.5">utp.edu.codekion.finanzas.config.SecurityConfig</node>
+    <node x="23.0" y="481.0">utp.edu.codekion.finanzas.model.TipoTarjeta</node>
+    <node x="1243.0" y="481.0">utp.edu.codekion.finanzas.model.TipoConcepto</node>
+    <node x="1114.5" y="872.0">utp.edu.codekion.finanzas.model.Divisa</node>
+    <node x="174.5" y="2251.0">utp.edu.codekion.finanzas.exception.FirmaException</node>
+    <node x="670.0" y="1706.5">utp.edu.codekion.finanzas.model.Sesiones</node>
+    <node x="541.5" y="734.0">utp.edu.codekion.finanzas.model.Usuario</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="utp.edu.codekion.finanzas.model.Cuenta" target="utp.edu.codekion.finanzas.model.Banco" relationship="TO_ONE">
+      <point x="0.0" y="-304.0" />
+      <point x="92.0" y="1498.0" />
+      <point x="272.0" y="1498.0" />
+      <point x="0.0" y="200.5" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Cuenta" target="utp.edu.codekion.finanzas.model.TipoTarjeta" relationship="TO_ONE">
+      <point x="0.0" y="-304.0" />
+      <point x="92.0" y="1498.0" />
+      <point x="272.0" y="1498.0" />
+      <point x="272.0" y="1258.0" />
+      <point x="132.0" y="1258.0" />
+      <point x="0.0" y="97.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Categoria" target="utp.edu.codekion.finanzas.model.TipoTransaccion" relationship="TO_ONE">
+      <point x="0.0" y="-131.5" />
+      <point x="0.0" y="97.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.ResumenTransacciones" target="utp.edu.codekion.finanzas.model.Usuario" relationship="TO_ONE">
+      <point x="0.0" y="-338.5" />
+      <point x="452.0" y="1478.0" />
+      <point x="632.0" y="1478.0" />
+      <point x="632.0" y="1378.0" />
+      <point x="626.75" y="1378.0" />
+      <point x="-85.25" y="304.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.repository.TransaccionRepository" target="utp.edu.codekion.finanzas.model.Transacciones" relationship="DEPENDENCY">
+      <point x="0.0" y="-14.0" />
+      <point x="812.0" y="2398.0" />
+      <point x="1250.5" y="2398.0" />
+      <point x="-101.5" y="396.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Transacciones" target="utp.edu.codekion.finanzas.model.TipoConcepto" relationship="TO_ONE">
+      <point x="0.0" y="-396.0" />
+      <point x="0.0" y="97.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Transacciones" target="utp.edu.codekion.finanzas.model.Divisa" relationship="TO_ONE">
+      <point x="0.0" y="-396.0" />
+      <point x="1352.0" y="1238.0" />
+      <point x="1212.0" y="1238.0" />
+      <point x="0.0" y="166.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.exception.GlobalExceptionHandler" target="utp.edu.codekion.finanzas.exception.NoTokenJwtException" relationship="DEPENDENCY">
+      <point x="0.0" y="-85.5" />
+      <point x="452.0" y="2338.0" />
+      <point x="632.0" y="2338.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Transacciones" target="utp.edu.codekion.finanzas.model.Usuario" relationship="TO_ONE">
+      <point x="0.0" y="-396.0" />
+      <point x="1352.0" y="1398.0" />
+      <point x="632.0" y="1398.0" />
+      <point x="632.0" y="1378.0" />
+      <point x="626.75" y="1378.0" />
+      <point x="-85.25" y="304.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.config.ApplicationConfig" target="utp.edu.codekion.finanzas.config.ApplicationConfig" relationship="DEPENDENCY">
+      <point x="-265.5" y="-0.0" />
+      <point x="1312.0" y="3098.0" />
+      <point x="1312.0" y="3498.0" />
+      <point x="1892.0" y="3498.0" />
+      <point x="0.0" y="85.5" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Cuenta" target="utp.edu.codekion.finanzas.model.TipoCuenta" relationship="TO_ONE">
+      <point x="0.0" y="-304.0" />
+      <point x="92.0" y="1498.0" />
+      <point x="272.0" y="1498.0" />
+      <point x="272.0" y="1258.0" />
+      <point x="412.0" y="1258.0" />
+      <point x="0.0" y="97.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.exception.GlobalExceptionHandler" target="utp.edu.codekion.finanzas.exception.FirmaException" relationship="DEPENDENCY">
+      <point x="0.0" y="-85.5" />
+      <point x="452.0" y="2338.0" />
+      <point x="272.0" y="2338.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Transacciones" target="utp.edu.codekion.finanzas.model.Categoria" relationship="TO_ONE">
+      <point x="0.0" y="-396.0" />
+      <point x="1352.0" y="1238.0" />
+      <point x="1052.0" y="1238.0" />
+      <point x="0.0" y="131.5" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Transacciones" target="utp.edu.codekion.finanzas.model.Frecuencia" relationship="TO_ONE">
+      <point x="0.0" y="-396.0" />
+      <point x="1352.0" y="1238.0" />
+      <point x="1632.0" y="1238.0" />
+      <point x="0.0" y="97.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.exception.GlobalExceptionHandler" target="utp.edu.codekion.finanzas.exception.TokenExpiradoException" relationship="DEPENDENCY">
+      <point x="0.0" y="-85.5" />
+      <point x="452.0" y="2338.0" />
+      <point x="-88.0" y="2338.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Sesiones" target="utp.edu.codekion.finanzas.model.Usuario" relationship="TO_ONE">
+      <point x="0.0" y="-131.5" />
+      <point x="772.0" y="1478.0" />
+      <point x="632.0" y="1478.0" />
+      <point x="632.0" y="1378.0" />
+      <point x="626.75" y="1378.0" />
+      <point x="-85.25" y="304.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.repository.UsuarioRepository" target="utp.edu.codekion.finanzas.model.Usuario" relationship="DEPENDENCY">
+      <point x="0.0" y="-27.0" />
+      <point x="952.0" y="1678.0" />
+      <point x="797.25" y="1678.0" />
+      <point x="85.25" y="304.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.exception.GlobalExceptionHandler" target="utp.edu.codekion.finanzas.exception.GlobalExceptionHandler" relationship="DEPENDENCY">
+      <point x="-330.5" y="-0.0" />
+      <point x="-248.0" y="3098.0" />
+      <point x="-248.0" y="3558.0" />
+      <point x="452.0" y="3558.0" />
+      <point x="0.0" y="85.5" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Transacciones.TransaccionesBuilder" target="utp.edu.codekion.finanzas.model.Transacciones" relationship="INNER_CLASS">
+      <point x="0.0" y="-281.0" />
+      <point x="1292.0" y="2378.0" />
+      <point x="1453.5" y="2378.0" />
+      <point x="101.5" y="396.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.config.SecurityConfig" target="utp.edu.codekion.finanzas.config.SecurityConfig" relationship="DEPENDENCY">
+      <point x="-216.0" y="-0.0" />
+      <point x="-248.0" y="-22.0" />
+      <point x="-248.0" y="318.0" />
+      <point x="232.0" y="318.0" />
+      <point x="0.0" y="85.5" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.FinanzasApplication" target="utp.edu.codekion.finanzas.FinanzasApplication" relationship="DEPENDENCY">
+      <point x="-104.5" y="-0.0" />
+      <point x="-248.0" y="1038.0" />
+      <point x="-248.0" y="1218.0" />
+      <point x="-8.0" y="1218.0" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Transacciones" target="utp.edu.codekion.finanzas.model.TipoTransaccion" relationship="TO_ONE">
+      <point x="0.0" y="-396.0" />
+      <point x="1352.0" y="1238.0" />
+      <point x="1492.0" y="1238.0" />
+      <point x="1492.0" y="418.0" />
+      <point x="1052.0" y="418.0" />
+      <point x="0.0" y="97.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.model.Cuenta" target="utp.edu.codekion.finanzas.model.Usuario" relationship="TO_ONE">
+      <point x="0.0" y="-304.0" />
+      <point x="92.0" y="1498.0" />
+      <point x="272.0" y="1498.0" />
+      <point x="272.0" y="1458.0" />
+      <point x="632.0" y="1458.0" />
+      <point x="632.0" y="1378.0" />
+      <point x="626.75" y="1378.0" />
+      <point x="-85.25" y="304.0" />
+    </edge>
+    <edge source="utp.edu.codekion.finanzas.config.SecurityConfig" target="utp.edu.codekion.finanzas.exception.CustomAccessDeniedHandle" relationship="CREATE">
+      <point x="0.0" y="-85.5" />
+      <point x="0.0" y="39.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="2.2964389001659127" showDependencies="true" x="101.91540088123992" y="1019.4827592085369" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

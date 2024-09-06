@@ -66,4 +66,10 @@ public class Transacciones {
     @Column(name = "fecha_transaccion")
     private LocalDate fechaTransaccion;
 
+    //En caso la fecha solo sea la actual
+    @PrePersist
+    public void prePersist() {
+        fechaTransaccion = LocalDate.now();
+    }
+
 }

@@ -29,6 +29,16 @@ public class GlobalExceptionHandler {
         return getMapResponseEntity(ex.getMessage());
     }
 
+    @ExceptionHandler(EntidadNoExisteException.class)
+    public ResponseEntity<Map<String, Object>> handleEntidadNoExisteException(EntidadNoExisteException ex) {
+        return getMapResponseEntity(ex.getMessage());
+    }
+
+    @ExceptionHandler(DatoNoIngresadoException.class)
+    public ResponseEntity<Map<String, Object>> handleDatoNoIngresadoException(DatoNoIngresadoException ex) {
+        return getMapResponseEntity(ex.getMessage());
+    }
+
     private static ResponseEntity<Map<String, Object>> getMapResponseEntity(String message) {
         response.clear();
         response.put("message", message);
