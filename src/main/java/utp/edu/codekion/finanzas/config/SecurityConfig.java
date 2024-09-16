@@ -17,6 +17,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import utp.edu.codekion.finanzas.config.filter.JwtAuthenticationFilter;
 import utp.edu.codekion.finanzas.exception.CustomAccessDeniedHandle;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -50,14 +53,13 @@ public class SecurityConfig {
     //Implementamos la configuracion de CORS
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        //Establecemos los metodos permitidos
-        corsConfiguration.addAllowedOrigin("http://localhost:4200");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.setAllowCredentials(true); // Para permitir el envio de credenciales
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:*", "http://localhost:2400"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration); // Se establece la configuracion para todas las rutas
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
