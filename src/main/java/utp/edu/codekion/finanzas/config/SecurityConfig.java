@@ -52,7 +52,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         //Establecemos los metodos permitidos
-        corsConfiguration.addAllowedOrigin("http://localhost:*");
+        corsConfiguration.addAllowedOrigin("http://localhost:4200");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowCredentials(true); // Para permitir el envio de credenciales

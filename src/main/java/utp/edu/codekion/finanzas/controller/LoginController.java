@@ -21,7 +21,7 @@ public class LoginController {
 
     private final IUsuarioService usuarioService;
     private final IAuthenticacionService authenticacionService;
-    
+
     @PostMapping(value = "login")
     public ResponseEntity<?> login(@RequestBody LoginDto dto) {
         Map<String, Object> response = new HashMap<>();
