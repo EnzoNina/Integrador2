@@ -6,11 +6,18 @@ import utp.edu.codekion.finanzas.model.Frecuencia;
 import utp.edu.codekion.finanzas.repository.FrecuenciaRepository;
 import utp.edu.codekion.finanzas.service.IService.IFrecuenciaService;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FrecuenciaServiceImpl implements IFrecuenciaService {
 
     private final FrecuenciaRepository frecuenciaRepository;
+
+    @Override
+    public List<Frecuencia> findAll() {
+        return frecuenciaRepository.findAll();
+    }
 
     @Override
     public Frecuencia findById(Integer id) {
