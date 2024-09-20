@@ -3,17 +3,14 @@ package utp.edu.codekion.finanzas.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import utp.edu.codekion.finanzas.model.*;
 import utp.edu.codekion.finanzas.model.dto.TransaccionDto;
 import utp.edu.codekion.finanzas.service.IService.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-
 import static utp.edu.codekion.finanzas.utils.EntidadNoNulaException.verificarEntidadNoNula;
 
 @RestController
@@ -25,26 +22,61 @@ public class TransaccionController {
 
     private final ITransaccionService transaccionService;
     private final IUsuarioService usuarioService;
-    private final ITipoTransaccionService tipoTransaccionService;
     private final ICategoriaService categoriaService;
     private final ITipoConceptoService tipoConceptoService;
     private final IFrecuenciaService frecuenciaService;
     private final IDivisaService divisaService;
+    private final IPresupuestoService presupuestoService;
+
+    @GetMapping("/listar")
+    private ResponseEntity<?> listarTransacciones() {
+        response.clear();
+        response.put("transacciones", transaccionService.findAll());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    private ResponseEntity<?> buscarTransaccion(@PathVariable Integer id) {
+        Transacciones transaccion = transaccionService.findById(id);
+        if (transaccion == null) {
+            response.put("mensaje", "Transacción no encontrada");
+            response.put("status", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+        response.put("transaccion", transaccion);
+        response.put("status", HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @PostMapping("/guardar")
     private ResponseEntity<?> guardarTransaccion(@RequestBody TransaccionDto dto) {
         response.clear();
+        Categoria categoria = categoriaService.findById(Integer.valueOf(dto.getId_tipo_categoria()));
+        //Buscamos si la categoria de la transacción tiene un presupuesto
+        if(presupuestoService.findByCategoriaId(categoria)!=null){
+            //Sumar todas las transacciones de una categoria y comparar con el presupuesto
+            BigDecimal totalTransacciones = transaccionService.sumarTransaccionesPorCategoria(categoria.getId());
+
+            if (totalTransacciones == null) {
+                totalTransacciones = BigDecimal.ZERO;
+            }
+
+            //Comprobamos si el total de las transacciones supera el presupuesto
+            if(totalTransacciones.add(dto.getMonto()).compareTo(presupuestoService.findByCategoriaId(categoria).getMonto())>0) {
+                response.put("mensaje","El monto de la transacción supera el presupuesto");
+                response.put("status", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+        }
+
         //Buscamos todas las entidades que necesitamos para guardar la transaccion
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
-        TipoTransaccion tipoTransaccion = tipoTransaccionService.findById(Integer.valueOf(dto.getId_tipo_transaccion()));
-        Categoria categoria = categoriaService.findById(Integer.valueOf(dto.getId_tipo_categoria()));
         TipoConcepto tipoConcepto = tipoConceptoService.findById(Integer.valueOf(dto.getId_tipo_concepto()));
         Frecuencia frecuencia = frecuenciaService.findById(Integer.valueOf(dto.getId_tipo_frecuencia()));
         Divisa divisa = divisaService.findById(Integer.valueOf(dto.getId_tipo_divisa()));
 
         // Verificamos que las entidades no sean null
         verificarEntidadNoNula(usuario, "Usuario no existe");
-        verificarEntidadNoNula(tipoTransaccion, "Tipo de transacción no existe");
         verificarEntidadNoNula(categoria, "Categoría no existe");
         verificarEntidadNoNula(tipoConcepto, "Tipo de concepto no existe");
         verificarEntidadNoNula(frecuencia, "Frecuencia no existe");
@@ -54,7 +86,6 @@ public class TransaccionController {
         Transacciones transaccion = Transacciones.builder()
                 .idUsuario(usuario)
                 .idCategoria(categoria)
-                .idTipoTra(tipoTransaccion)
                 .idConcepto(tipoConcepto)
                 .idFrecuencia(frecuencia)
                 .monto(dto.getMonto())
@@ -69,6 +100,5 @@ public class TransaccionController {
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
-
 
 }

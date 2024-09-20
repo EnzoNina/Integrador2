@@ -37,11 +37,6 @@ public class Transacciones {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_tipo_tra", nullable = false)
-    private TipoTransaccion idTipoTra;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_concepto", nullable = false)
     private TipoConcepto idConcepto;
 

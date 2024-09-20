@@ -7,6 +7,7 @@ import utp.edu.codekion.finanzas.model.Usuario;
 import utp.edu.codekion.finanzas.repository.TransaccionRepository;
 import utp.edu.codekion.finanzas.service.IService.ITransaccionService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -42,5 +43,10 @@ public class TransaccionesServiceImpl implements ITransaccionService {
         Transacciones transaccion = transaccionRepository.findById(id).orElse(null);
         assert transaccion != null;
         transaccionRepository.delete(transaccion);
+    }
+
+    @Override
+    public BigDecimal sumarTransaccionesPorCategoria(Integer id_categoria) {
+        return transaccionRepository.sumarTransaccionesPorCategoria(id_categoria);
     }
 }
