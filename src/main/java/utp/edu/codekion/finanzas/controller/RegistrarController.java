@@ -19,7 +19,7 @@ import static utp.edu.codekion.finanzas.utils.EntidadNoNulaException.verificarEn
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class registrarController {
+public class RegistrarController {
 
     private final IUsuarioService usuarioService;
 

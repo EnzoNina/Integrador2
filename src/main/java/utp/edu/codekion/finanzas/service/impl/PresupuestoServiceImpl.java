@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import utp.edu.codekion.finanzas.model.Categoria;
 import utp.edu.codekion.finanzas.model.Presupuesto;
+import utp.edu.codekion.finanzas.model.Usuario;
 import utp.edu.codekion.finanzas.repository.PresupuestoRepository;
 import utp.edu.codekion.finanzas.service.IService.IPresupuestoService;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -13,9 +16,20 @@ public class PresupuestoServiceImpl implements IPresupuestoService {
 
     private final PresupuestoRepository presupuestoRepository;
 
+
     @Override
-    public Presupuesto findByCategoriaId(Categoria categoria) {
-        return presupuestoRepository.findByCategoria(categoria);
+    public List<Presupuesto> listarPresupuestosByUsuario(Usuario usuario) {
+        return presupuestoRepository.listarPresupuestosByCategoriaAndUsuario(usuario);
+    }
+
+    @Override
+    public Presupuesto findById(Integer id) {
+        return presupuestoRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Presupuesto findByCategoriaIdAndUsuario(Categoria categoria, Usuario usuario) {
+        return presupuestoRepository.findByCategoriaAndUsuario(categoria, usuario);
     }
 
     @Override

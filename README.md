@@ -1,9 +1,6 @@
-
 # Integrador 2
 
 Proyecto del curso Integrador 2, que consta de la creación de una aplicación web para las finanzas personalse.
-
-
 
 ## Tecnologías utilizadas
 
@@ -16,8 +13,6 @@ Proyecto del curso Integrador 2, que consta de la creación de una aplicación w
 **Base de datos:** PostgreSQL.
 
 **Otros:** Jpa, DevTools, Lombok.
- 
-
 
 ## Referencias de API
 
@@ -28,21 +23,21 @@ Proyecto del curso Integrador 2, que consta de la creación de una aplicación w
 ```http
   POST /auth/register
 ```
+
 Datos de entrada
 
 ```json
 {
   "nombres": "<nombres>",
-  "dni": "<dni>", 
+  "dni": "<dni>",
   "apellido_paterno": "<apellido_paterno>",
   "apellido_materno": "<apellido_materno>",
-  "celular": "<celular>", 
+  "celular": "<celular>",
   "direccion": "<direccion>",
-  "username": "<username>", 
+  "username": "<username>",
   "password": "<password>"
 }
 ```
-
 
 #### Login
 
@@ -51,12 +46,14 @@ Datos de entrada
 ```
 
 Datos de entrada
+
 ```json
 {
   "email": "<email>",
   "password": "<password>"
 }
 ```
+
 ## Categorias
 
 #### Buscar Categoria por ID
@@ -65,10 +62,9 @@ Datos de entrada
   GET /categoria/{id}
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
+| Parameter | Type      | Description                      |
+|:----------|:----------|:---------------------------------|
 | `id`      | `Integer` | **Requiere**. Id de la categoria |
-
 
 #### Listar todas las Categorias
 
@@ -97,11 +93,70 @@ Datos de entrada
   DELETE /categoria/{id}
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
+| Parameter | Type      | Description                      |
+|:----------|:----------|:---------------------------------|
 | `id`      | `Integer` | **Requiere**. Id de la categoria |
 
 ## Presupuesto
+
+#### Listar presupuestos por Usuario
+
+```http
+  GET /presupuesto/listar/usuario
+```
+
+Datos de entrada
+
+```json
+{
+  "id_categoria": "<id_categoria>"
+}
+```
+
+Ejemplo de repuesta
+
+```json
+{
+  "presupuestos": [
+    {
+      "id": 2,
+      "nombre": "Comida",
+      "descripcion": "Ahorro de comida",
+      "monto": 1200.00
+    }
+  ]
+}
+```
+
+#### Buscar presupuesto
+
+```http
+    GET /presupuesto/buscar
+```
+
+Datos de entrada
+
+```json
+{
+  "id_usuario": "",
+  "id_categoria": ""
+}
+```
+
+Ejemplo de repuesta
+
+```json
+{
+  "presupuesto": {
+    "nombre": "Comida",
+    "descripcion": "Ahorro de comida",
+    "monto": "1200.00",
+    "categoria": "Sueldo",
+    "usuario": "adminadmin"
+  },
+  "mensaje": "Presupuesto encontrado"
+}
+```
 
 #### Agregar presupuesto
 
@@ -110,12 +165,29 @@ Datos de entrada
 ```
 
 Datos de entrada
+
 ```json
 {
   "id_categoria": "<id_categoria>",
   "nombre": "<nombre>",
   "descripcion": "<descripcion>",
   "monto": "<monto>"
+}
+```
+
+#### Actualizar presupuesto
+
+```http
+  PUT /presupuesto/actualizar/{id}
+```
+
+Datos de entrada
+
+```json
+{
+  "nombre": "",
+  "descripcion": "",
+  "monto": {}
 }
 ```
 
@@ -127,12 +199,12 @@ Datos de entrada
   GET /divisa/{id}
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
+| Parameter | Type      | Description                   |
+|:----------|:----------|:------------------------------|
 | `id`      | `Integer` | **Requiere**. Id de la Divisa |
 
-
 #### Listar Divisas
+
 ```http
   GET /divisa/listar
 ```
@@ -145,12 +217,12 @@ Datos de entrada
   GET /concepto/{id}
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
+| Parameter | Type      | Description                   |
+|:----------|:----------|:------------------------------|
 | `id`      | `Integer` | **Requiere**. Id del Concepto |
 
-
 #### Listar Conceptos
+
 ```http
   GET /concepto/listar
 ```
@@ -163,17 +235,31 @@ Datos de entrada
   GET /frecuencia/{id}
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
+| Parameter | Type      | Description                       |
+|:----------|:----------|:----------------------------------|
 | `id`      | `Integer` | **Requiere**. Id de la Frecuencia |
 
-
 #### Listar Frecuencia
+
 ```http
   GET /frecuencia/listar
 ```
 
 ## Transacciones
+
+#### Listar Transacciones por Usuario
+
+```http
+  POST /transaccion/listar
+```
+
+Datos de entrada
+
+```json
+{
+  "id_usuario": "<id_usuario>"
+}
+```
 
 #### Buscar transaccion por ID
 
@@ -181,15 +267,10 @@ Datos de entrada
   GET /transaccion/{id}
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
+| Parameter | Type      | Description                        |
+|:----------|:----------|:-----------------------------------|
 | `id`      | `Integer` | **Requiere**. Id de la transaccion |
 
-
-#### Listar Transacciones
-```http
-  GET /transaccion/listar
-```
 
 #### Guardar transaccion
 
@@ -198,6 +279,7 @@ Datos de entrada
 ```
 
 Datos de entrada
+
 ```json
 {
   "id_usuario": "<id_usuario>",

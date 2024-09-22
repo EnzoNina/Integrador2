@@ -1,4 +1,4 @@
-package utp.edu.codekion.finanzas.controller;
+package utp.edu.codekion.finanzas.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

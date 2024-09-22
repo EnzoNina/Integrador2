@@ -25,7 +25,7 @@ public class TransaccionesServiceImpl implements ITransaccionService {
 
     @Override
     public List<Transacciones> findByUsuario(Usuario usuario) {
-        return List.of();
+        return transaccionRepository.findByUsuario(usuario);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class TransaccionesServiceImpl implements ITransaccionService {
     }
 
     @Override
-    public BigDecimal sumarTransaccionesPorCategoria(Integer id_categoria) {
+    public BigDecimal sumarTransaccionesPorCategoriaAndUsuario(Integer id_categoria,Usuario usuario) {
         return transaccionRepository.sumarTransaccionesPorCategoria(id_categoria);
     }
 }

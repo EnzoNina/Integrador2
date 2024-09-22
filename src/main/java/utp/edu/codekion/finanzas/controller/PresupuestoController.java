@@ -3,15 +3,14 @@ package utp.edu.codekion.finanzas.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import utp.edu.codekion.finanzas.model.Categoria;
 import utp.edu.codekion.finanzas.model.Presupuesto;
-import utp.edu.codekion.finanzas.model.dto.PresupuestoDto;
+import utp.edu.codekion.finanzas.model.Usuario;
+import utp.edu.codekion.finanzas.model.dto.*;
 import utp.edu.codekion.finanzas.service.IService.ICategoriaService;
 import utp.edu.codekion.finanzas.service.IService.IPresupuestoService;
+import utp.edu.codekion.finanzas.service.IService.IUsuarioService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +24,44 @@ public class PresupuestoController {
 
     private final IPresupuestoService presupuestoService;
     private final ICategoriaService categoriaService;
+    private final IUsuarioService usuarioService;
+
+    @PostMapping("/listar/usuario")
+    private ResponseEntity<?> listarPresupuestosPorUsuario(@RequestBody UsuarioDto dto) {
+        Map<String, Object> response = new HashMap<>();
+
+        Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
+
+        response.put("presupuestos", presupuestoService.listarPresupuestosByUsuario(usuario));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/buscar")
+    private ResponseEntity<?> mostrarPresupuesto(@RequestBody FindPresupuestoDto dto) {
+        Map<String, Object> response = new HashMap<>();
+        Categoria categoria = categoriaService.findById(Integer.valueOf(dto.getId_categoria()));
+        Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
+        Presupuesto presupuesto = presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario);
+
+        if (presupuesto == null) {
+            response.put("mensaje", "Presupuesto no encontrado");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        //Creamos el presupuesto response
+        PresupuestoResponseDto presupuestoResponse = new PresupuestoResponseDto();
+
+        presupuestoResponse.setNombre(presupuesto.getNombre());
+        presupuestoResponse.setDescripcion(presupuesto.getDescripcion());
+        presupuestoResponse.setMonto(String.valueOf(presupuesto.getMonto()));
+        presupuestoResponse.setCategoria(presupuesto.getCategoria().getDescripcion());
+        presupuestoResponse.setUsuario(presupuesto.getUsuario().getNombres());
+
+        response.put("mensaje", "Presupuesto encontrado");
+        response.put("presupuesto", presupuestoResponse);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
 
     @PostMapping("/guardar")
     private ResponseEntity<?> guardarPresupuesto(@RequestBody PresupuestoDto dto) {
@@ -34,17 +71,22 @@ public class PresupuestoController {
         //Buscamos todas las entidades que necesitamos para guardar el presupuesto
         Categoria categoria = categoriaService.findById(dto.getId_categoria());
 
-        //Verificamos si la categoria ya cuenta con un presupuesto
-        if (presupuestoService.findByCategoriaId(categoria) != null) {
-            response.put("mensaje", "La categoría ya cuenta con un presupuesto");
+        //Buscamos al Usuario
+        Usuario usuario = usuarioService.findById(dto.getId_usuario());
+
+        //Verificamos si el usuario ya tiene un presupuesto en la categoria
+        if (presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario) != null) {
+            response.put("mensaje", "Ya existe un presupuesto para esta categoría");
             response.put("status", HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
+
 
         // Verificamos que las entidades no sean null
         verificarEntidadNoNula(categoria, "Categoría no existe.");
 
         Presupuesto presupuesto = new Presupuesto();
+        presupuesto.setUsuario(usuario);
         presupuesto.setNombre(dto.getNombre());
         presupuesto.setDescripcion(dto.getDescripcion());
         presupuesto.setMonto(dto.getMonto());
@@ -53,6 +95,29 @@ public class PresupuestoController {
         presupuestoService.save(presupuesto);
 
         response.put("mensaje", "Presupuesto guardado correctamente");
+        response.put("status", HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @PutMapping("/actualizar/{id}")
+    private ResponseEntity<?> actualizarPresupuesto(@RequestBody PresupuestoUpdateDto dto, @PathVariable(name = "id") String id) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        //Buscamos el Presupuesto
+        Presupuesto presupuestoEncontrado = presupuestoService.findById(Integer.valueOf(id));
+
+        // Verificamos que las entidades no sean null
+        verificarEntidadNoNula(presupuestoEncontrado, "Presupuesto no existe.");
+
+        presupuestoEncontrado.setNombre(dto.getNombre());
+        presupuestoEncontrado.setDescripcion(dto.getDescripcion());
+        presupuestoEncontrado.setMonto(dto.getMonto());
+
+        presupuestoService.save(presupuestoEncontrado);
+
+        response.put("mensaje", "Presupuesto actualizado correctamente");
         response.put("status", HttpStatus.OK);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

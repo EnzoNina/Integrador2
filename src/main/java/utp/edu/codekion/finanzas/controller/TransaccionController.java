@@ -6,11 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import utp.edu.codekion.finanzas.model.*;
 import utp.edu.codekion.finanzas.model.dto.TransaccionDto;
+import utp.edu.codekion.finanzas.model.dto.UsuarioDto;
 import utp.edu.codekion.finanzas.service.IService.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+
 import static utp.edu.codekion.finanzas.utils.EntidadNoNulaException.verificarEntidadNoNula;
 
 @RestController
@@ -28,10 +30,11 @@ public class TransaccionController {
     private final IDivisaService divisaService;
     private final IPresupuestoService presupuestoService;
 
-    @GetMapping("/listar")
-    private ResponseEntity<?> listarTransacciones() {
+    @PostMapping("/listar")
+    private ResponseEntity<?> listarTransacciones(@RequestBody UsuarioDto dto) {
         response.clear();
-        response.put("transacciones", transaccionService.findAll());
+        Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
+        response.put("transacciones", transaccionService.findByUsuario(usuario));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -51,18 +54,20 @@ public class TransaccionController {
     @PostMapping("/guardar")
     private ResponseEntity<?> guardarTransaccion(@RequestBody TransaccionDto dto) {
         response.clear();
+        //Buscamos la categoria y el usuario
         Categoria categoria = categoriaService.findById(Integer.valueOf(dto.getId_tipo_categoria()));
+        Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
         //Buscamos si la categoria de la transacción tiene un presupuesto
-        if(presupuestoService.findByCategoriaId(categoria)!=null){
+        if(presupuestoService.findByCategoriaIdAndUsuario(categoria,usuario)!=null){
             //Sumar todas las transacciones de una categoria y comparar con el presupuesto
-            BigDecimal totalTransacciones = transaccionService.sumarTransaccionesPorCategoria(categoria.getId());
+            BigDecimal totalTransacciones = transaccionService.sumarTransaccionesPorCategoriaAndUsuario(categoria.getId(), usuario);
 
             if (totalTransacciones == null) {
                 totalTransacciones = BigDecimal.ZERO;
             }
 
             //Comprobamos si el total de las transacciones supera el presupuesto
-            if(totalTransacciones.add(dto.getMonto()).compareTo(presupuestoService.findByCategoriaId(categoria).getMonto())>0) {
+            if(totalTransacciones.add(dto.getMonto()).compareTo(presupuestoService.findByCategoriaIdAndUsuario(categoria,usuario).getMonto())>0) {
                 response.put("mensaje","El monto de la transacción supera el presupuesto");
                 response.put("status", HttpStatus.BAD_REQUEST);
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -70,7 +75,6 @@ public class TransaccionController {
         }
 
         //Buscamos todas las entidades que necesitamos para guardar la transaccion
-        Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
         TipoConcepto tipoConcepto = tipoConceptoService.findById(Integer.valueOf(dto.getId_tipo_concepto()));
         Frecuencia frecuencia = frecuenciaService.findById(Integer.valueOf(dto.getId_tipo_frecuencia()));
         Divisa divisa = divisaService.findById(Integer.valueOf(dto.getId_tipo_divisa()));

@@ -24,6 +24,6 @@ public interface ITransaccionService {
     void delete(Integer id);
 
     //Sumar transacciones por categoria
-    BigDecimal sumarTransaccionesPorCategoria(Integer id_categoria);
+    BigDecimal sumarTransaccionesPorCategoriaAndUsuario(Integer id_categoria, Usuario usuario);
 
 }
