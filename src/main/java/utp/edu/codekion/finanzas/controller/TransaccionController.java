@@ -6,11 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import utp.edu.codekion.finanzas.model.*;
 import utp.edu.codekion.finanzas.model.dto.TransaccionDto;
+import utp.edu.codekion.finanzas.model.dto.TransaccionResponseDto;
 import utp.edu.codekion.finanzas.model.dto.UsuarioDto;
 import utp.edu.codekion.finanzas.service.IService.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static utp.edu.codekion.finanzas.utils.EntidadNoNulaException.verificarEntidadNoNula;
@@ -34,19 +37,54 @@ public class TransaccionController {
     private ResponseEntity<?> listarTransacciones(@RequestBody UsuarioDto dto) {
         response.clear();
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
-        response.put("transacciones", transaccionService.findByUsuario(usuario));
+        List<Transacciones> transaccionesListUsuario = transaccionService.findByUsuario(usuario);
+
+        //Creamos una lista de transacciones de respuesta
+        List<TransaccionResponseDto> transaccionesResponseList = new ArrayList<>();
+        for (Transacciones transaccion : transaccionesListUsuario) {
+            TransaccionResponseDto transaccionResponseDto = TransaccionResponseDto.builder()
+                    .id(transaccion.getId())
+                    .usuario(transaccion.getIdUsuario().getNombres())
+                    .categoria(transaccion.getIdCategoria().getDescripcion())
+                    .tipo_transaccion(transaccion.getIdCategoria().getIdTipoTra().getDescripcion())
+                    .tipo_concepto(transaccion.getIdConcepto().getDescripcion())
+                    .frecuencia(transaccion.getIdFrecuencia().getDescripcion())
+                    .divisa(transaccion.getDivisa().getSimbolo())
+                    .monto(transaccion.getMonto().toString())
+                    .descripcion(transaccion.getDescripcion())
+                    .fecha(transaccion.getFechaTransaccion().toString())
+                    .build();
+            transaccionesResponseList.add(transaccionResponseDto);
+        }
+
+        response.put("transacciones", transaccionesResponseList);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     private ResponseEntity<?> buscarTransaccion(@PathVariable Integer id) {
+        response.clear();
         Transacciones transaccion = transaccionService.findById(id);
         if (transaccion == null) {
             response.put("mensaje", "Transacción no encontrada");
             response.put("status", HttpStatus.NOT_FOUND);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
-        response.put("transaccion", transaccion);
+        //Creamos el objeto de respuesta
+        TransaccionResponseDto transaccionResponseDto = TransaccionResponseDto.builder()
+                .id(transaccion.getId())
+                .usuario(transaccion.getIdUsuario().getNombres())
+                .categoria(transaccion.getIdCategoria().getDescripcion())
+                .tipo_transaccion(transaccion.getIdCategoria().getIdTipoTra().getDescripcion())
+                .tipo_concepto(transaccion.getIdConcepto().getDescripcion())
+                .frecuencia(transaccion.getIdFrecuencia().getDescripcion())
+                .divisa(transaccion.getDivisa().getSimbolo())
+                .monto(transaccion.getMonto().toString())
+                .descripcion(transaccion.getDescripcion())
+                .fecha(transaccion.getFechaTransaccion().toString())
+                .build();
+
+        response.put("transaccion", transaccionResponseDto);
         response.put("status", HttpStatus.OK);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -58,7 +96,7 @@ public class TransaccionController {
         Categoria categoria = categoriaService.findById(Integer.valueOf(dto.getId_tipo_categoria()));
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
         //Buscamos si la categoria de la transacción tiene un presupuesto
-        if(presupuestoService.findByCategoriaIdAndUsuario(categoria,usuario)!=null){
+        if (presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario) != null) {
             //Sumar todas las transacciones de una categoria y comparar con el presupuesto
             BigDecimal totalTransacciones = transaccionService.sumarTransaccionesPorCategoriaAndUsuario(categoria.getId(), usuario);
 
@@ -67,8 +105,8 @@ public class TransaccionController {
             }
 
             //Comprobamos si el total de las transacciones supera el presupuesto
-            if(totalTransacciones.add(dto.getMonto()).compareTo(presupuestoService.findByCategoriaIdAndUsuario(categoria,usuario).getMonto())>0) {
-                response.put("mensaje","El monto de la transacción supera el presupuesto");
+            if (totalTransacciones.add(dto.getMonto()).compareTo(presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario).getMonto()) > 0) {
+                response.put("mensaje", "El monto de la transacción supera el presupuesto");
                 response.put("status", HttpStatus.BAD_REQUEST);
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }

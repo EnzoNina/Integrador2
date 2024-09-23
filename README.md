@@ -261,6 +261,36 @@ Datos de entrada
 }
 ```
 
+Ejemplo de respuesta
+```json
+"transacciones": [
+{
+"id": 2,
+"usuario": "adminadmin",
+"categoria": "Sueldo",
+"tipo_transaccion": "Ingreso",
+"tipo_concepto": "Sueldo Mensual",
+"frecuencia": "Diario",
+"divisa": "$",
+"monto": "1000.00",
+"descripcion": "Gasto",
+"fecha": "2024-09-22"
+},
+{
+"id": 3,
+"usuario": "adminadmin",
+"categoria": "Sueldo",
+"tipo_transaccion": "Ingreso",
+"tipo_concepto": "Sueldo Mensual",
+"frecuencia": "Diario",
+"divisa": "$",
+"monto": "100.00",
+"descripcion": "Gasto",
+"fecha": "2024-09-22"
+}
+]
+```
+
 #### Buscar transaccion por ID
 
 ```http
@@ -270,6 +300,26 @@ Datos de entrada
 | Parameter | Type      | Description                        |
 |:----------|:----------|:-----------------------------------|
 | `id`      | `Integer` | **Requiere**. Id de la transaccion |
+
+Ejemplo de respuesta
+```json
+{
+  "transaccion": {
+    "id": 2,
+    "usuario": "adminadmin",
+    "categoria": "Sueldo",
+    "tipo_transaccion": "Ingreso",
+    "tipo_concepto": "Sueldo Mensual",
+    "frecuencia": "Diario",
+    "divisa": "$",
+    "monto": "1000.00",
+    "descripcion": "Gasto",
+    "fecha": "2024-09-22"
+  },
+  "mensaje": "Transacción encontrada.",
+  "status": "OK"
+}
+```
 
 
 #### Guardar transaccion
