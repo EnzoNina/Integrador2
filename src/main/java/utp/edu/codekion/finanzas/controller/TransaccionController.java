@@ -42,19 +42,7 @@ public class TransaccionController {
         //Creamos una lista de transacciones de respuesta
         List<TransaccionResponseDto> transaccionesResponseList = new ArrayList<>();
         for (Transacciones transaccion : transaccionesListUsuario) {
-            TransaccionResponseDto transaccionResponseDto = TransaccionResponseDto.builder()
-                    .id(transaccion.getId())
-                    .usuario(transaccion.getIdUsuario().getNombres())
-                    .categoria(transaccion.getIdCategoria().getDescripcion())
-                    .tipo_transaccion(transaccion.getIdCategoria().getIdTipoTra().getDescripcion())
-                    .tipo_concepto(transaccion.getIdConcepto().getDescripcion())
-                    .frecuencia(transaccion.getIdFrecuencia().getDescripcion())
-                    .divisa(transaccion.getDivisa().getSimbolo())
-                    .monto(transaccion.getMonto().toString())
-                    .descripcion(transaccion.getDescripcion())
-                    .fecha(transaccion.getFechaTransaccion().toString())
-                    .build();
-            transaccionesResponseList.add(transaccionResponseDto);
+            transaccionesResponseList.add(setTransaccionResponseDto(transaccion));
         }
 
         response.put("transacciones", transaccionesResponseList);
@@ -71,8 +59,17 @@ public class TransaccionController {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         //Creamos el objeto de respuesta
-        TransaccionResponseDto transaccionResponseDto = TransaccionResponseDto.builder()
-                .id(transaccion.getId())
+        TransaccionResponseDto transaccionResponseDto = setTransaccionResponseDto(transaccion);
+
+
+        response.put("transaccion", transaccionResponseDto);
+        response.put("status", HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    private TransaccionResponseDto setTransaccionResponseDto(Transacciones transaccion) {
+        return TransaccionResponseDto.builder()
+                .id(String.valueOf(transaccion.getId()))
                 .usuario(transaccion.getIdUsuario().getNombres())
                 .categoria(transaccion.getIdCategoria().getDescripcion())
                 .tipo_transaccion(transaccion.getIdCategoria().getIdTipoTra().getDescripcion())
@@ -83,10 +80,6 @@ public class TransaccionController {
                 .descripcion(transaccion.getDescripcion())
                 .fecha(transaccion.getFechaTransaccion().toString())
                 .build();
-
-        response.put("transaccion", transaccionResponseDto);
-        response.put("status", HttpStatus.OK);
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/guardar")

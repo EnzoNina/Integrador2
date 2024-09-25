@@ -37,7 +37,7 @@ public class AuthenticationServiceImpl implements IAuthenticacionService {
                 .claims(extraClaims)
                 .subject(user.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))//Agregamos la fecha de creacion
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10)) //Agregamos la fecha de expiracion (10 minutos)
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24)) //Agregamos la fecha de expiracion (1 dia)
                 .signWith(getKey())//Agregamos la firma
                 .compact();
     }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Builder
 public class TransaccionResponseDto {
 
-    private Integer id;
+    private String id;
     private String usuario;
     private String categoria;
     private String tipo_transaccion;

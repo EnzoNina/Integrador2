@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import utp.edu.codekion.finanzas.model.Categoria;
 import utp.edu.codekion.finanzas.model.dto.CategoriaDto;
+import utp.edu.codekion.finanzas.model.dto.CategoriaResponseDto;
 import utp.edu.codekion.finanzas.service.IService.ICategoriaService;
 import utp.edu.codekion.finanzas.service.IService.ITipoTransaccionService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,14 +22,29 @@ public class CategoriaController {
     private final ITipoTransaccionService tipoTransaccionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Categoria> findById(@PathVariable Integer id) {
+    public ResponseEntity<CategoriaResponseDto> findById(@PathVariable Integer id) {
         Categoria entity = categoriaService.findById(id);
-        return entity != null ? ResponseEntity.ok(entity) : ResponseEntity.notFound().build();
+        CategoriaResponseDto dto = new CategoriaResponseDto();
+        dto.setId(String.valueOf(entity.getId()));
+        dto.setTransaccion(entity.getIdTipoTra().getDescripcion());
+        dto.setDescripcion(entity.getDescripcion());
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping
-    public List<Categoria> listAll() {
-        return categoriaService.findAll();
+    public List<CategoriaResponseDto> listAll() {
+        List<Categoria> list = categoriaService.findAll();
+        List<CategoriaResponseDto> responseList = new ArrayList<>();
+
+
+        list.forEach(categoria -> {
+            CategoriaResponseDto dto = new CategoriaResponseDto();
+            dto.setId(String.valueOf(categoria.getId()));
+            dto.setTransaccion(categoria.getIdTipoTra().getDescripcion());
+            dto.setDescripcion(categoria.getDescripcion());
+            responseList.add(dto);
+        });
+        return responseList;
     }
 
     @PostMapping
@@ -36,7 +53,7 @@ public class CategoriaController {
         Categoria categoria = new Categoria();
 
         //Buscamos el tipo de transacción
-        categoria.setIdTipoTra(tipoTransaccionService.findById(dto.getId_tipo_transaccion()));
+        categoria.setIdTipoTra(tipoTransaccionService.findById(Integer.valueOf(dto.getId_tipo_transaccion())));
         categoria.setDescripcion(dto.getDescripcion());
 
         return categoriaService.save(categoria);

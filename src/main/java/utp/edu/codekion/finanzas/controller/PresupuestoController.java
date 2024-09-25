@@ -12,7 +12,9 @@ import utp.edu.codekion.finanzas.service.IService.ICategoriaService;
 import utp.edu.codekion.finanzas.service.IService.IPresupuestoService;
 import utp.edu.codekion.finanzas.service.IService.IUsuarioService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static utp.edu.codekion.finanzas.utils.EntidadNoNulaException.verificarEntidadNoNula;
@@ -32,7 +34,13 @@ public class PresupuestoController {
 
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
 
-        response.put("presupuestos", presupuestoService.listarPresupuestosByUsuario(usuario));
+        List<Presupuesto> listPresupuesto = presupuestoService.listarPresupuestosByUsuario(usuario);
+        List<PresupuestoResponseDto> listDto = new ArrayList<>();
+        listPresupuesto.forEach(presupuesto -> {
+            listDto.add(setAtributosPresupuestoResponseDto(presupuesto));
+        });
+
+        response.put("presupuestos", listDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -49,6 +57,15 @@ public class PresupuestoController {
         }
 
         //Creamos el presupuesto response
+        PresupuestoResponseDto presupuestoResponseDto = setAtributosPresupuestoResponseDto(presupuesto);
+
+        response.put("mensaje", "Presupuesto encontrado");
+        response.put("presupuesto", presupuestoResponseDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+    private PresupuestoResponseDto setAtributosPresupuestoResponseDto(Presupuesto presupuesto) {
         PresupuestoResponseDto presupuestoResponse = new PresupuestoResponseDto();
 
         presupuestoResponse.setNombre(presupuesto.getNombre());
@@ -56,11 +73,7 @@ public class PresupuestoController {
         presupuestoResponse.setMonto(String.valueOf(presupuesto.getMonto()));
         presupuestoResponse.setCategoria(presupuesto.getCategoria().getDescripcion());
         presupuestoResponse.setUsuario(presupuesto.getUsuario().getNombres());
-
-        response.put("mensaje", "Presupuesto encontrado");
-        response.put("presupuesto", presupuestoResponse);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-
+        return presupuestoResponse;
     }
 
     @PostMapping("/guardar")
@@ -69,10 +82,10 @@ public class PresupuestoController {
         Map<String, Object> response = new HashMap<>();
 
         //Buscamos todas las entidades que necesitamos para guardar el presupuesto
-        Categoria categoria = categoriaService.findById(dto.getId_categoria());
+        Categoria categoria = categoriaService.findById(Integer.valueOf(dto.getId_categoria()));
 
         //Buscamos al Usuario
-        Usuario usuario = usuarioService.findById(dto.getId_usuario());
+        Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
 
         //Verificamos si el usuario ya tiene un presupuesto en la categoria
         if (presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario) != null) {

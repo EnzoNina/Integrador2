@@ -29,12 +29,10 @@ public class Presupuesto {
 
     private BigDecimal monto;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
