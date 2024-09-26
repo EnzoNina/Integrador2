@@ -102,7 +102,7 @@ Datos de entrada
 #### Listar presupuestos por Usuario
 
 ```http
-  GET /presupuesto/listar/usuario
+  POST /presupuesto/listar/usuario
 ```
 
 Datos de entrada
@@ -131,7 +131,7 @@ Ejemplo de repuesta
 #### Buscar presupuesto
 
 ```http
-    GET /presupuesto/buscar
+    POST /presupuesto/buscar
 ```
 
 Datos de entrada
@@ -168,6 +168,7 @@ Datos de entrada
 
 ```json
 {
+  "id_usuario": "<id_usuario>",
   "id_categoria": "<id_categoria>",
   "nombre": "<nombre>",
   "descripcion": "<descripcion>",
