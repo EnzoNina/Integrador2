@@ -109,7 +109,7 @@ Datos de entrada
 
 ```json
 {
-  "id_categoria": "<id_categoria>"
+  "id_usuario": "<id_usuario>"
 }
 ```
 
