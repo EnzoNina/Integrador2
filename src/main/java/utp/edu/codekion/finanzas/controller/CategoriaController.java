@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categoria")
+@RequestMapping("/y")
 @RequiredArgsConstructor
 public class CategoriaController {
 
@@ -61,7 +61,6 @@ public class CategoriaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
-
         Categoria categoria = categoriaService.findById(id);
         categoriaService.delete(categoria);
         return new ResponseEntity<>("Categoria eliminada correctamente", HttpStatus.OK);

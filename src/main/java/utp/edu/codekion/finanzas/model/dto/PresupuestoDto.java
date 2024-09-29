@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 @Getter
 public class PresupuestoDto {
 
-    private String id_usuario;
-    private String id_categoria;
+    private Integer id_usuario;
+    private Integer id_categoria;
     private String nombre;
     private String descripcion;
     private BigDecimal monto;
