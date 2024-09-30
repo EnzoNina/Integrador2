@@ -66,10 +66,37 @@ Datos de entrada
 |:----------|:----------|:---------------------------------|
 | `id`      | `Integer` | **Requiere**. Id de la categoria |
 
+Ejemplo de respuesta
+
+```json
+{
+  "id": "1",
+  "transaccion": "Ingreso",
+  "descripcion": "Sueldo"
+}
+```
+
 #### Listar todas las Categorias
 
 ```http
   GET /categoria/
+```
+
+Ejemplo de respuesta
+
+```json
+[
+  {
+    "id": "1",
+    "transaccion": "Ingreso",
+    "descripcion": "Sueldo"
+  },
+  {
+    "id": "2",
+    "transaccion": "Ingreso",
+    "descripcion": "Negocio"
+  }
+]
 ```
 
 #### Agregar una categoria
@@ -87,6 +114,19 @@ Datos de entrada
 }
 ```
 
+Ejemplo de respuesta
+
+```json
+{
+  "id": 42,
+  "idTipoTra": {
+    "id": 1,
+    "descripcion": "Ingreso"
+  },
+  "descripcion": "Nueva transaccion"
+}
+```
+
 #### Borrar Categoria por ID
 
 ```http
@@ -96,6 +136,16 @@ Datos de entrada
 | Parameter | Type      | Description                      |
 |:----------|:----------|:---------------------------------|
 | `id`      | `Integer` | **Requiere**. Id de la categoria |
+
+Ejemplo de respuesta
+
+```json
+{
+  Categoria
+  eliminada
+  correctamente
+}
+```
 
 ## Presupuesto
 
@@ -176,6 +226,15 @@ Datos de entrada
 }
 ```
 
+Ejemplo de respuesta
+
+```json
+{
+  "mensaje": "Presupuesto guardado correctamente",
+  "status": "OK"
+}
+```
+
 #### Actualizar presupuesto
 
 ```http
@@ -192,6 +251,15 @@ Datos de entrada
 }
 ```
 
+Ejemlo de respuesta
+
+```json
+{
+  "mensaje": "Presupuesto actualizado correctamente",
+  "status": "OK"
+}
+```
+
 ## Divisa
 
 #### Buscar Divisa por ID
@@ -204,12 +272,41 @@ Datos de entrada
 |:----------|:----------|:------------------------------|
 | `id`      | `Integer` | **Requiere**. Id de la Divisa |
 
+Ejemplo de respuesta
+
+```json
+{
+  "id": 1,
+  "codigo": "USD",
+  "nombre": "Dolar estadounidense",
+  "simbolo": "$"
+}
+```
+
 #### Listar Divisas
 
 ```http
   GET /divisa/listar
 ```
 
+Ejemplo de respuesta
+
+```json
+[
+  {
+    "id": 1,
+    "codigo": "USD",
+    "nombre": "Dolar estadounidense",
+    "simbolo": "$"
+  },
+  {
+    "id": 2,
+    "codigo": "EUR",
+    "nombre": "Euro",
+    "simbolo": "€"
+  }
+]
+```
 ## Concepto
 
 #### Buscar Concepto por ID
@@ -222,10 +319,37 @@ Datos de entrada
 |:----------|:----------|:------------------------------|
 | `id`      | `Integer` | **Requiere**. Id del Concepto |
 
+Ejemplo de respuesta
+
+```json
+{
+  "id": 1,
+  "descripcion": "Sueldo Mensual"
+}
+```
+
 #### Listar Conceptos
 
 ```http
   GET /concepto/listar
+```
+Ejemplo de respuesta
+
+```json
+[
+  {
+    "id": 1,
+    "descripcion": "Sueldo Mensual"
+  },
+  {
+    "id": 2,
+    "descripcion": "Ganancia Personal"
+  },
+  {
+    "id": 3,
+    "descripcion": "Ventas propias"
+  }
+]
 ```
 
 ## Frecuencia
@@ -240,10 +364,38 @@ Datos de entrada
 |:----------|:----------|:----------------------------------|
 | `id`      | `Integer` | **Requiere**. Id de la Frecuencia |
 
+Ejemplo de respuesta
+
+```json
+{
+  "id": 1,
+  "descripcion": "Diario"
+}
+```
+
 #### Listar Frecuencia
 
 ```http
   GET /frecuencia/listar
+```
+
+Ejemplo de respuesta
+
+```json
+[
+  {
+    "id": 1,
+    "descripcion": "Diario"
+  },
+  {
+    "id": 2,
+    "descripcion": "Semanal"
+  },
+  {
+    "id": 3,
+    "descripcion": "Quincenal"
+  }
+]
 ```
 
 ## Transacciones
@@ -263,6 +415,7 @@ Datos de entrada
 ```
 
 Ejemplo de respuesta
+
 ```json
 "transacciones": [
 {
@@ -303,6 +456,7 @@ Ejemplo de respuesta
 | `id`      | `Integer` | **Requiere**. Id de la transaccion |
 
 Ejemplo de respuesta
+
 ```json
 {
   "transaccion": {
@@ -321,7 +475,6 @@ Ejemplo de respuesta
   "status": "OK"
 }
 ```
-
 
 #### Guardar transaccion
 
@@ -342,3 +495,11 @@ Datos de entrada
   "descripcion": "<descripcion>"
 }
 ```
+Ejemplo de respuesta
+
+```json
+{
+  "mensaje": "Transacción guardada correctamente",
+  "status": "OK"
+}
+``
