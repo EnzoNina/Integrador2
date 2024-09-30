@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/y")
+@RequestMapping("/categoria")
 @RequiredArgsConstructor
 public class CategoriaController {
 
