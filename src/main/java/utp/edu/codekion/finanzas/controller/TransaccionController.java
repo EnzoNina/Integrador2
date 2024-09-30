@@ -88,20 +88,24 @@ public class TransaccionController {
         //Buscamos la categoria y el usuario
         Categoria categoria = categoriaService.findById(Integer.valueOf(dto.getId_tipo_categoria()));
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
-        //Buscamos si la categoria de la transacción tiene un presupuesto
-        if (presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario) != null) {
-            //Sumar todas las transacciones de una categoria y comparar con el presupuesto
-            BigDecimal totalTransacciones = transaccionService.sumarTransaccionesPorCategoriaAndUsuario(categoria.getId(), usuario);
 
-            if (totalTransacciones == null) {
-                totalTransacciones = BigDecimal.ZERO;
-            }
+        //Verificamos que la transacción sea de un egreso
+        if (categoria.getIdTipoTra().getId() == 2) {
+            //Buscamos si la categoria de la transacción tiene un presupuesto
+            if (presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario) != null) {
+                //Sumar todas las transacciones de una categoria y comparar con el presupuesto
+                BigDecimal totalTransacciones = transaccionService.sumarTransaccionesPorCategoriaAndUsuario(categoria.getId(), usuario);
 
-            //Comprobamos si el total de las transacciones supera el presupuesto
-            if (totalTransacciones.add(dto.getMonto()).compareTo(presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario).getMonto()) > 0) {
-                response.put("mensaje", "El monto de la transacción supera el presupuesto");
-                response.put("status", HttpStatus.BAD_REQUEST);
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                if (totalTransacciones == null) {
+                    totalTransacciones = BigDecimal.ZERO;
+                }
+
+                //Comprobamos si el total de las transacciones supera el presupuesto
+                if (totalTransacciones.add(dto.getMonto()).compareTo(presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario).getMonto()) > 0) {
+                    response.put("mensaje", "El monto de la transacción supera el presupuesto");
+                    response.put("status", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                }
             }
         }
 

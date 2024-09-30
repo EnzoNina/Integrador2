@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class PresupuestoResponseDto {
 
+    private String id;
     private String nombre;
     private String descripcion;
     private String monto;

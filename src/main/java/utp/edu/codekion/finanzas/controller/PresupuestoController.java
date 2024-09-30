@@ -67,7 +67,7 @@ public class PresupuestoController {
 
     private PresupuestoResponseDto setAtributosPresupuestoResponseDto(Presupuesto presupuesto) {
         PresupuestoResponseDto presupuestoResponse = new PresupuestoResponseDto();
-
+        presupuestoResponse.setId(String.valueOf(presupuesto.getId()));
         presupuestoResponse.setNombre(presupuesto.getNombre());
         presupuestoResponse.setDescripcion(presupuesto.getDescripcion());
         presupuestoResponse.setMonto(String.valueOf(presupuesto.getMonto()));
