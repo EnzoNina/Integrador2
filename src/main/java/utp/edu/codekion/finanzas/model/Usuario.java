@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Getter
 @Setter
@@ -19,7 +18,8 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "usuarios")
 @AllArgsConstructor
-public class Usuario  implements UserDetails {
+@ToString
+public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('usuarios_id_seq'::regclass)")

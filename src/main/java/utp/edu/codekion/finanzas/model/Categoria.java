@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 @Getter
@@ -13,6 +14,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 @Table(name = "categoria")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@ToString
 public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

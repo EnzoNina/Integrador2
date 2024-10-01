@@ -1,11 +1,7 @@
 package utp.edu.codekion.finanzas.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -15,6 +11,7 @@ import java.math.BigDecimal;
 @Getter
 @Entity
 @Table
+@ToString
 public class Presupuesto {
 
     @Id
@@ -34,7 +31,7 @@ public class Presupuesto {
     private Categoria categoria;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "id")
     private Usuario usuario;
 
 }

@@ -1,6 +1,7 @@
 package utp.edu.codekion.finanzas.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import static utp.edu.codekion.finanzas.utils.EntidadNoNulaException.verificarEn
 @RestController
 @RequestMapping("/transaccion")
 @RequiredArgsConstructor
+@Log
 public class TransaccionController {
 
     private final Map<String, Object> response = new HashMap<>();
@@ -87,12 +89,16 @@ public class TransaccionController {
         response.clear();
         //Buscamos la categoria y el usuario
         Categoria categoria = categoriaService.findById(Integer.valueOf(dto.getId_tipo_categoria()));
+        log.info("Categoria: " + categoria);
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
+        log.info("Usuario: " + usuario);
 
         //Verificamos que la transacción sea de un egreso
         if (categoria.getIdTipoTra().getId() == 2) {
             //Buscamos si la categoria de la transacción tiene un presupuesto
-            if (presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario) != null) {
+            Presupuesto presupuestoEncontrado = presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario);
+            log.info("Presupuesto: " + presupuestoEncontrado);
+            if (presupuestoEncontrado != null) {
                 //Sumar todas las transacciones de una categoria y comparar con el presupuesto
                 BigDecimal totalTransacciones = transaccionService.sumarTransaccionesPorCategoriaAndUsuario(categoria.getId(), usuario);
 
@@ -101,7 +107,7 @@ public class TransaccionController {
                 }
 
                 //Comprobamos si el total de las transacciones supera el presupuesto
-                if (totalTransacciones.add(dto.getMonto()).compareTo(presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario).getMonto()) > 0) {
+                if (totalTransacciones.add(dto.getMonto()).compareTo(presupuestoEncontrado.getMonto()) > 0) {
                     response.put("mensaje", "El monto de la transacción supera el presupuesto");
                     response.put("status", HttpStatus.BAD_REQUEST);
                     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

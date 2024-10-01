@@ -1,6 +1,7 @@
 package utp.edu.codekion.finanzas.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import utp.edu.codekion.finanzas.model.Categoria;
 import utp.edu.codekion.finanzas.model.Presupuesto;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log
 public class PresupuestoServiceImpl implements IPresupuestoService {
 
     private final PresupuestoRepository presupuestoRepository;
@@ -29,6 +31,8 @@ public class PresupuestoServiceImpl implements IPresupuestoService {
 
     @Override
     public Presupuesto findByCategoriaIdAndUsuario(Categoria categoria, Usuario usuario) {
+        log.info("Usuario: " + usuario.getId());
+        log.info("Cateo: " + categoria.getId());
         return presupuestoRepository.findByCategoriaAndUsuario(categoria, usuario);
     }
 
