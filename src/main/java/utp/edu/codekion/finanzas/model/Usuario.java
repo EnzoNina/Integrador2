@@ -23,7 +23,7 @@ public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('usuarios_id_seq'::regclass)")
-    @Column(name = "id", nullable = false)
+    @Column(name = "usuario_id", nullable = false)
     private Integer id;
 
     @Size(max = 50)
