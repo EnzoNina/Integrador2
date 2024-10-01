@@ -47,6 +47,6 @@ public class TransaccionesServiceImpl implements ITransaccionService {
 
     @Override
     public BigDecimal sumarTransaccionesPorCategoriaAndUsuario(Integer id_categoria,Usuario usuario) {
-        return transaccionRepository.sumarTransaccionesPorCategoria(id_categoria);
+        return transaccionRepository.sumarTransaccionesPorCategoriaAndUsuario(id_categoria,usuario);
     }
 }
