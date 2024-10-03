@@ -26,10 +26,9 @@ import static utp.edu.codekion.finanzas.utils.EntidadNoNulaException.verificarEn
 public class TransaccionController {
 
     private final Map<String, Object> response = new HashMap<>();
-
     private final ITransaccionService transaccionService;
     private final IUsuarioService usuarioService;
-    private final ICategoriaService categoriaService;
+    private final IUsuarioCategoriaService usuarioCategoriaService;
     private final ITipoConceptoService tipoConceptoService;
     private final IFrecuenciaService frecuenciaService;
     private final IDivisaService divisaService;
@@ -88,7 +87,7 @@ public class TransaccionController {
     private ResponseEntity<?> guardarTransaccion(@RequestBody TransaccionDto dto) {
         response.clear();
         //Buscamos la categoria y el usuario
-        Categoria categoria = categoriaService.findById(Integer.valueOf(dto.getId_tipo_categoria()));
+        UsuariosCategoria categoria = usuarioCategoriaService.findById(Integer.valueOf(dto.getId_tipo_categoria()));
         log.info("Categoria: " + categoria);
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
         log.info("Usuario: " + usuario);
@@ -96,7 +95,7 @@ public class TransaccionController {
         //Verificamos que la transacción sea de un egreso
         if (categoria.getIdTipoTra().getId() == 2) {
             //Buscamos si la categoria de la transacción tiene un presupuesto
-            Presupuesto presupuestoEncontrado = presupuestoService.findByCategoriaIdAndUsuario(categoria, usuario);
+            Presupuesto presupuestoEncontrado = presupuestoService.findByUsuarioCategoria(categoria);
             log.info("Presupuesto: " + presupuestoEncontrado);
             if (presupuestoEncontrado != null) {
                 //Sumar todas las transacciones de una categoria y comparar con el presupuesto

@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -21,8 +20,8 @@ import java.util.Map;
 @Table(name = "resumen_transacciones")
 public class ResumenTransacciones {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ColumnDefault("nextval('resumen_transacciones_id_seq'::regclass)")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "resumen_transacciones_id_gen")
+    @SequenceGenerator(name = "resumen_transacciones_id_gen", sequenceName = "resumen_transacciones_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 

@@ -12,8 +12,8 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "tipo_tarjeta")
 public class TipoTarjeta {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('tipo_tarjeta_id_seq'::regclass)")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

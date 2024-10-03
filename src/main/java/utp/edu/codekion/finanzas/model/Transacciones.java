@@ -1,6 +1,5 @@
 package utp.edu.codekion.finanzas.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,35 +14,34 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Builder
 @Table(name = "transacciones")
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Transacciones {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('transacciones_id_seq'::regclass)")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_usuario")
     private Usuario idUsuario;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_categoria", nullable = false)
-    private Categoria idCategoria;
+    private UsuariosCategoria idCategoria;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_concepto", nullable = false)
     private TipoConcepto idConcepto;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_frecuencia", nullable = false)
     private Frecuencia idFrecuencia;
 
@@ -52,7 +50,7 @@ public class Transacciones {
     private BigDecimal monto;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "divisa", nullable = false)
     private Divisa divisa;
 
@@ -63,10 +61,11 @@ public class Transacciones {
     @Column(name = "fecha_transaccion")
     private LocalDate fechaTransaccion;
 
-    //En caso la fecha solo sea la actual
     @PrePersist
     public void prePersist() {
-        fechaTransaccion = LocalDate.now();
+        if (fechaTransaccion == null) {
+            fechaTransaccion = LocalDate.now();
+        }
     }
 
 }

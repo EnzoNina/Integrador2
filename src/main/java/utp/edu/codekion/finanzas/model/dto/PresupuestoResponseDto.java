@@ -8,10 +8,10 @@ import lombok.Setter;
 public class PresupuestoResponseDto {
 
     private String id;
+    private String categoria;
+    private String usuario;
     private String nombre;
     private String descripcion;
     private String monto;
-    private String categoria;
-    private String usuario;
 
 }

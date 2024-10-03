@@ -56,7 +56,59 @@ Datos de entrada
 
 ## Categorias
 
-#### Buscar Categoria por ID
+#### Listar Categorias
+
+```http
+  GET /categorias/listarCategorias
+```
+
+Ejemplo de respuesta
+
+```json
+[
+  {
+    "id": 1,
+    "descripcion": "Sueldo"
+  },
+  {
+    "id": 2,
+    "descripcion": "Negocio"
+  },
+  {
+    "id": 3,
+    "descripcion": "Inversiones"
+  }
+]
+```
+
+### Crear Categoria
+
+```http
+  POST /categorias/crearCategoria
+```
+
+Datos de entrada
+
+```json
+{
+  "descripcion": "<descripcion>"
+}
+```
+
+Ejemplo de respuesta
+
+```json
+{
+  "categoria": {
+    "id": 21,
+    "descripcion": "Compras fin de mes"
+  },
+  "mensaje": "Categoria creada correctamente"
+}
+```
+## CategoriasUsuarios
+
+#### Buscar Categoria Usuario por ID
 
 ```http
   GET /categoria/{id}
@@ -71,15 +123,16 @@ Ejemplo de respuesta
 ```json
 {
   "id": "1",
-  "transaccion": "Ingreso",
-  "descripcion": "Sueldo"
+  "tipo_transaccion": "Ingreso",
+  "categoria": "Sueldo",
+  "descripcion": "Sueldo de trabajo 1"
 }
 ```
 
-#### Listar todas las Categorias
+#### Listar todas las Categorias Usuarios
 
 ```http
-  GET /categoria/
+  GET /categoria/listar/usuario/{id}
 ```
 
 Ejemplo de respuesta
@@ -88,29 +141,45 @@ Ejemplo de respuesta
 [
   {
     "id": "1",
-    "transaccion": "Ingreso",
-    "descripcion": "Sueldo"
+    "tipo_transaccion": "Ingreso",
+    "categoria": "Sueldo",
+    "descripcion": "Sueldo de trabajo 1"
   },
   {
-    "id": "2",
-    "transaccion": "Ingreso",
-    "descripcion": "Negocio"
+    "id": "3",
+    "tipo_transaccion": "Ingreso",
+    "categoria": "Sueldo",
+    "descripcion": "Sueldo de trabajo 3"
+  },
+  {
+    "id": "5",
+    "tipo_transaccion": "Ingreso",
+    "categoria": "Sueldo",
+    "descripcion": "Sueldo de trabajo 4"
+  },
+  {
+    "id": "7",
+    "tipo_transaccion": "Egreso",
+    "categoria": "Gastos Personales",
+    "descripcion": "Gastos personales pequeños"
   }
 ]
 ```
 
-#### Agregar una categoria
+#### Agregar una categoria usuario
 
 ```http
-  POST /categoria/
+  POST /categoria/crearCategoriaUsuario
 ```
 
 Datos de entrada
 
 ```json
 {
-  "id_tipo_transaccion": "<id_tipo_transaccion>",
-  "descripcion": "<descripcion>"
+  "id_usuario": "1",
+  "id_tipo_transaccion": "2",
+  "id_categoria": "10",
+  "descripcion": "Gastos personales pequeños"
 }
 ```
 
@@ -118,16 +187,14 @@ Ejemplo de respuesta
 
 ```json
 {
-  "id": 42,
-  "idTipoTra": {
-    "id": 1,
-    "descripcion": "Ingreso"
-  },
-  "descripcion": "Nueva transaccion"
+  "id": "7",
+  "tipo_transaccion": "Egreso",
+  "categoria": "Gastos Personales",
+  "descripcion": "Gastos personales pequeños"
 }
 ```
 
-#### Borrar Categoria por ID
+#### Borrar Categoria Usuario por ID
 
 ```http
   DELETE /categoria/{id}
@@ -141,9 +208,7 @@ Ejemplo de respuesta
 
 ```json
 {
-  Categoria
-  eliminada
-  correctamente
+  "mensaje": "Categoria eliminada correctamente"
 }
 ```
 
@@ -169,10 +234,12 @@ Ejemplo de repuesta
 {
   "presupuestos": [
     {
-      "id": 2,
-      "nombre": "Comida",
-      "descripcion": "Ahorro de comida",
-      "monto": 1200.00
+      "id": "4",
+      "categoria": "Gastos Personales",
+      "usuario": "adminadmin",
+      "nombre": "Presupuesto de gastos personales",
+      "descripcion": "Maximo de 1000",
+      "monto": "1000.00"
     }
   ]
 }
@@ -188,8 +255,7 @@ Datos de entrada
 
 ```json
 {
-  "id_usuario": "",
-  "id_categoria": ""
+  "id_categoria_usuario": ""
 }
 ```
 
@@ -198,11 +264,12 @@ Ejemplo de repuesta
 ```json
 {
   "presupuesto": {
-    "nombre": "Comida",
-    "descripcion": "Ahorro de comida",
-    "monto": "1200.00",
-    "categoria": "Sueldo",
-    "usuario": "adminadmin"
+    "id": "4",
+    "categoria": "Gastos Personales",
+    "usuario": "adminadmin",
+    "nombre": "Presupuesto de gastos personales",
+    "descripcion": "Maximo de 1000",
+    "monto": "1000.00"
   },
   "mensaje": "Presupuesto encontrado"
 }
@@ -219,7 +286,7 @@ Datos de entrada
 ```json
 {
   "id_usuario": "<id_usuario>",
-  "id_categoria": "<id_categoria>",
+  "id_categoria_usuario": "<id_categoria>",
   "nombre": "<nombre>",
   "descripcion": "<descripcion>",
   "monto": "<monto>"
@@ -307,6 +374,7 @@ Ejemplo de respuesta
   }
 ]
 ```
+
 ## Concepto
 
 #### Buscar Concepto por ID
@@ -333,6 +401,7 @@ Ejemplo de respuesta
 ```http
   GET /concepto/listar
 ```
+
 Ejemplo de respuesta
 
 ```json
@@ -417,32 +486,34 @@ Datos de entrada
 Ejemplo de respuesta
 
 ```json
-"transacciones": [
 {
-"id": 2,
-"usuario": "adminadmin",
-"categoria": "Sueldo",
-"tipo_transaccion": "Ingreso",
-"tipo_concepto": "Sueldo Mensual",
-"frecuencia": "Diario",
-"divisa": "$",
-"monto": "1000.00",
-"descripcion": "Gasto",
-"fecha": "2024-09-22"
-},
-{
-"id": 3,
-"usuario": "adminadmin",
-"categoria": "Sueldo",
-"tipo_transaccion": "Ingreso",
-"tipo_concepto": "Sueldo Mensual",
-"frecuencia": "Diario",
-"divisa": "$",
-"monto": "100.00",
-"descripcion": "Gasto",
-"fecha": "2024-09-22"
+  "transacciones": [
+    {
+      "id": 2,
+      "usuario": "adminadmin",
+      "categoria": "Sueldo",
+      "tipo_transaccion": "Ingreso",
+      "tipo_concepto": "Sueldo Mensual",
+      "frecuencia": "Diario",
+      "divisa": "$",
+      "monto": "1000.00",
+      "descripcion": "Gasto",
+      "fecha": "2024-09-22"
+    },
+    {
+      "id": 3,
+      "usuario": "adminadmin",
+      "categoria": "Sueldo",
+      "tipo_transaccion": "Ingreso",
+      "tipo_concepto": "Sueldo Mensual",
+      "frecuencia": "Diario",
+      "divisa": "$",
+      "monto": "100.00",
+      "descripcion": "Gasto",
+      "fecha": "2024-09-22"
+    }
+  ]
 }
-]
 ```
 
 #### Buscar transaccion por ID
@@ -495,6 +566,7 @@ Datos de entrada
   "descripcion": "<descripcion>"
 }
 ```
+
 Ejemplo de respuesta
 
 ```json

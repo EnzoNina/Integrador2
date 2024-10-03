@@ -14,16 +14,15 @@ import java.util.Collections;
 @Getter
 @Setter
 @Entity
-@Builder
-@NoArgsConstructor
 @Table(name = "usuarios")
+@Builder
 @AllArgsConstructor
-@ToString
+@NoArgsConstructor
 public class Usuario implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('usuarios_id_seq'::regclass)")
-    @Column(name = "usuario_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Integer id;
 
     @Size(max = 50)
@@ -51,7 +50,6 @@ public class Usuario implements UserDetails {
     @Column(name = "password", nullable = false, length = 50)
     private String password;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton((GrantedAuthority) () -> "ROLE_USER");
@@ -60,25 +58,5 @@ public class Usuario implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

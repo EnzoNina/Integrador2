@@ -16,7 +16,7 @@ public class UsuarioImpl implements IUsuarioService {
 
     @Override
     public Optional<Usuario> findByUsernameAndPassword(String username, String password) {
-        return usuarioRepository.findByUsernameAndPassword(username,password);
+        return usuarioRepository.findByUsernameAndPassword(username, password);
     }
 
     @Override

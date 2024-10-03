@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public class FindPresupuestoDto {
 
-    private String id_usuario;
-    private String id_categoria;
+    private String id_categoria_usuario;
 
 }
