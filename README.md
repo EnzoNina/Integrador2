@@ -574,4 +574,120 @@ Ejemplo de respuesta
   "mensaje": "Transacción guardada correctamente",
   "status": "OK"
 }
-``
+```
+
+# Dashboard
+## Obtener el Balance Total
+
+
+```http
+  GET /dashboard/balance/{id}
+```
+
+| Parameter | Type      | Description                  |
+|:----------|:----------|:-----------------------------|
+| `id`      | `Integer` | **Requiere**. Id del usuario |
+
+Ejemplo de respuesta
+
+```json
+{
+  1000.00
+}
+```
+
+## Ingresos por mes
+
+```http
+  GET /dashboard/ingresos_por_mes/{id}
+```
+
+| Parameter | Type      | Description                  |
+|:----------|:----------|:-----------------------------|
+| `id`      | `Integer` | **Requiere**. Id del usuario |
+
+Ejemplo de respuesta
+
+```json
+{
+    ["2024-09": 1000.00],
+    ["2024-10": 2000.00]
+}
+```
+
+## Egresos por mes
+
+```http
+  GET /dashboard/egresos_por_mes/{id}
+```
+
+| Parameter | Type      | Description                  |
+|:----------|:----------|:-----------------------------|
+| `id`      | `Integer` | **Requiere**. Id del usuario |
+
+Ejemplo de respuesta
+
+```json
+{
+    ["2024-09": 1000.00],
+    ["2024-10": 2000.00]
+}
+```
+
+## Transacciones recientes
+```http
+  GET /dashboard/transacciones_recientes/{id}
+```
+
+| Parameter | Type      | Description                  |
+|:----------|:----------|:-----------------------------|
+| `id`      | `Integer` | **Requiere**. Id del usuario |
+
+Ejemplo de respuesta
+
+```json
+[
+        {
+            "id": 2,
+            "usuario": "adminadmin",
+            "categoria": "Sueldo",
+            "tipo_transaccion": "Ingreso",
+            "tipo_concepto": "Sueldo Mensual",
+            "frecuencia": "Diario",
+            "divisa": "$",
+            "monto": "1000.00",
+            "descripcion": "Gasto",
+            "fecha": "2024-09-22"
+        },
+        {
+            "id": 3,
+            "usuario": "adminadmin",
+            "categoria": "Sueldo",
+            "tipo_transaccion": "Ingreso",
+            "tipo_concepto": "Sueldo Mensual",
+            "frecuencia": "Diario",
+            "divisa": "$",
+            "monto": "100.00",
+            "descripcion": "Gasto",
+            "fecha": "2024-09-22"
+        }
+    ]
+```
+## Gastos por categoria
+
+```http
+  GET /dashboard/gastos_por_categoria/{id}
+```
+
+| Parameter | Type      | Description                  |
+|:----------|:----------|:-----------------------------|
+| `id`      | `Integer` | **Requiere**. Id del usuario |
+
+Ejemplo de respuesta
+
+```json
+{
+    "Gastos Personales": 1000.00,
+    "Inversiones": 2000.00
+}
+```
