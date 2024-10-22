@@ -15,4 +15,39 @@ public interface TransaccionRepository extends JpaRepository<Transacciones, Inte
 
     @Query("SELECT SUM(t.monto) FROM Transacciones t WHERE t.idCategoria.id = ?1 AND t.idUsuario = ?2")
     BigDecimal sumarTransaccionesPorCategoriaAndUsuario(Integer idCategoria, Usuario usuario);
+
+    @Query("SELECT SUM(CASE WHEN t.idCategoria.idTipoTra.id = 1 THEN t.monto ELSE 0 END) - SUM(CASE WHEN t.idCategoria.idTipoTra.id = 2 THEN t.monto ELSE 0 END) FROM Transacciones t WHERE t.idUsuario.id = ?1")
+    BigDecimal balanceTotal(Integer idUsuario);
+
+    @Query("SELECT TO_CHAR(t.fechaTransaccion, 'YYYY-MM') AS mes, SUM(t.monto) AS totalIngresos " +
+            "FROM Transacciones t " +
+            "JOIN t.idUsuario u " +
+            "JOIN t.idCategoria uc " +
+            "JOIN uc.idTipoTra tc " +
+            "WHERE u.id = ?1 AND tc.descripcion = 'Ingreso' " +
+            "GROUP BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM') " +
+            "ORDER BY mes")
+    List<Object[]> ingresosPorMes(Integer idUsuario);
+
+    @Query("SELECT TO_CHAR(t.fechaTransaccion, 'YYYY-MM') AS mes, SUM(t.monto) AS totalGastos " +
+            "FROM Transacciones t " +
+            "JOIN t.idUsuario u " +
+            "JOIN t.idCategoria uc " +
+            "JOIN uc.idTipoTra tc " +
+            "WHERE u.id = ?1 AND tc.descripcion = 'Egreso' " +
+            "GROUP BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM') " +
+            "ORDER BY mes")
+    List<Object[]> gastosPorMes(Integer idUsuario);
+
+    @Query("SELECT t FROM Transacciones t WHERE t.idUsuario.id = ?1 ORDER BY t.fechaTransaccion DESC LIMIT 10")
+    List<Transacciones> transaccionesRecientes(Integer idUsuario);
+
+    @Query("SELECT uc.descripcion, SUM(t.monto) " +
+            "FROM Transacciones t " +
+            "JOIN t.idUsuario u " +
+            "JOIN t.idCategoria uc " +
+            "JOIN uc.idTipoTra tc " +
+            "WHERE u.id = ?1 AND tc.descripcion = 'Egreso' " +
+            "GROUP BY uc.descripcion")
+    List<Object[]> gastosPorCategoria(Integer idUsuario);
 }

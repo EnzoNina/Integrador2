@@ -49,4 +49,31 @@ public class TransaccionesServiceImpl implements ITransaccionService {
     public BigDecimal sumarTransaccionesPorCategoriaAndUsuario(Integer id_categoria, Usuario usuario) {
         return transaccionRepository.sumarTransaccionesPorCategoriaAndUsuario(id_categoria, usuario);
     }
+
+    @Override
+    public BigDecimal balanceTotal(Integer id_usuario) {
+        return transaccionRepository.balanceTotal(id_usuario);
+    }
+
+    @Override
+    public List<Object[]> ingresosPorMes(Integer id_usuario) {
+        return transaccionRepository.ingresosPorMes(id_usuario);
+    }
+
+    @Override
+    public List<Object[]> gastosPorMes(Integer id_usuario) {
+        return transaccionRepository.gastosPorMes(id_usuario);
+    }
+
+    @Override
+    public List<Transacciones> transaccionesRecientes(Integer id_usuario) {
+        return transaccionRepository.transaccionesRecientes(id_usuario);
+    }
+
+    @Override
+    public List<Object[]> gastosPorCategoria(Integer id_usuario) {
+        return transaccionRepository.gastosPorCategoria(id_usuario);
+    }
+
+
 }

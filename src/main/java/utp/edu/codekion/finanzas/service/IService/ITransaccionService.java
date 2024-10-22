@@ -26,4 +26,19 @@ public interface ITransaccionService {
     //Sumar transacciones por categoria
     BigDecimal sumarTransaccionesPorCategoriaAndUsuario(Integer id_categoria, Usuario usuario);
 
+    //Balance Total
+    BigDecimal balanceTotal(Integer id_usuario);
+
+    //Obtener los ingresos por mes
+    List<Object[]> ingresosPorMes(Integer id_usuario);
+
+    //Gastos por mes
+    List<Object[]> gastosPorMes(Integer id_usuario);
+
+    //Transacciones recientes
+    List<Transacciones> transaccionesRecientes(Integer id_usuario);
+
+    //Gastos por categoria
+    List<Object[]> gastosPorCategoria(Integer id_usuario);
+
 }

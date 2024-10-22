@@ -1,5 +1,6 @@
 package utp.edu.codekion.finanzas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -25,23 +26,24 @@ public class Transacciones {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_usuario")
     private Usuario idUsuario;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "id_categoria", nullable = false)
     private UsuariosCategoria idCategoria;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "id_concepto", nullable = false)
     private TipoConcepto idConcepto;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "id_frecuencia", nullable = false)
     private Frecuencia idFrecuencia;
 
@@ -50,7 +52,7 @@ public class Transacciones {
     private BigDecimal monto;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "divisa", nullable = false)
     private Divisa divisa;
 
