@@ -33,7 +33,7 @@ public class DashboardController {
     }
 
     //Gastos por mes
-    @GetMapping("/gastos_por_mes/{id}")
+    @GetMapping("/egresos_por_mes/{id}")
     public Object[] gastosPorMes(@PathVariable Integer id) {
         return transaccionService.gastosPorMes(id).toArray();
     }
