@@ -1,17 +1,22 @@
 package utp.edu.codekion.finanzas.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import utp.edu.codekion.finanzas.model.Transacciones;
+import utp.edu.codekion.finanzas.model.dto.IngresoMesDto;
 import utp.edu.codekion.finanzas.model.dto.TransaccionResponseDto;
 import utp.edu.codekion.finanzas.service.IService.ITransaccionService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/dashboard")
@@ -28,14 +33,20 @@ public class DashboardController {
 
     //Ingresos por mes
     @GetMapping("/ingresos_por_mes/{id}")
-    public Object[] ingresosPorMes(@PathVariable Integer id) {
-        return transaccionService.ingresosPorMes(id).toArray();
+    public ResponseEntity<?> ingresosPorMes(@PathVariable Integer id) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("ingresos", transaccionService.ingresosPorMes(id));
+        response.put("status", "success");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //Gastos por mes
     @GetMapping("/egresos_por_mes/{id}")
-    public Object[] gastosPorMes(@PathVariable Integer id) {
-        return transaccionService.gastosPorMes(id).toArray();
+    public ResponseEntity<?> gastosPorMes(@PathVariable Integer id) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("egresos", transaccionService.gastosPorMes(id));
+        response.put("status", "success");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //Transacciones recientes
@@ -54,8 +65,11 @@ public class DashboardController {
 
     //Gastos por categoria
     @GetMapping("/gastos_por_categoria/{id}")
-    public Object[] gastosPorCategoria(@PathVariable Integer id) {
-        return transaccionService.gastosPorCategoria(id).toArray();
+    public ResponseEntity<?> gastosPorCategoria(@PathVariable Integer id) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("gastos", transaccionService.gastosPorCategoria(id));
+        response.put("status", "success");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private TransaccionResponseDto setTransaccionResponseDto(Transacciones transaccion) {

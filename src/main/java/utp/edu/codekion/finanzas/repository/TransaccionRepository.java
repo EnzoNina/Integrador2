@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import utp.edu.codekion.finanzas.model.Transacciones;
 import utp.edu.codekion.finanzas.model.Usuario;
+import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
+import utp.edu.codekion.finanzas.model.dto.IngresoMesDto;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,35 +21,35 @@ public interface TransaccionRepository extends JpaRepository<Transacciones, Inte
     @Query("SELECT SUM(CASE WHEN t.idCategoria.idTipoTra.id = 1 THEN t.monto ELSE 0 END) - SUM(CASE WHEN t.idCategoria.idTipoTra.id = 2 THEN t.monto ELSE 0 END) FROM Transacciones t WHERE t.idUsuario.id = ?1")
     BigDecimal balanceTotal(Integer idUsuario);
 
-    @Query("SELECT TO_CHAR(t.fechaTransaccion, 'YYYY-MM') AS mes, SUM(t.monto) AS totalIngresos " +
+    @Query("SELECT new utp.edu.codekion.finanzas.model.dto.IngresoMesDto(TO_CHAR(t.fechaTransaccion, 'YYYY-MM'), SUM(t.monto)) " +
             "FROM Transacciones t " +
             "JOIN t.idUsuario u " +
             "JOIN t.idCategoria uc " +
             "JOIN uc.idTipoTra tc " +
             "WHERE u.id = ?1 AND tc.descripcion = 'Ingreso' " +
             "GROUP BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM') " +
-            "ORDER BY mes")
-    List<Object[]> ingresosPorMes(Integer idUsuario);
+            "ORDER BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM')")
+    List<IngresoMesDto> ingresosPorMes(Integer idUsuario);
 
-    @Query("SELECT TO_CHAR(t.fechaTransaccion, 'YYYY-MM') AS mes, SUM(t.monto) AS totalGastos " +
+    @Query("SELECT new utp.edu.codekion.finanzas.model.dto.IngresoMesDto(TO_CHAR(t.fechaTransaccion, 'YYYY-MM'), SUM(t.monto)) " +
             "FROM Transacciones t " +
             "JOIN t.idUsuario u " +
             "JOIN t.idCategoria uc " +
             "JOIN uc.idTipoTra tc " +
-            "WHERE u.id = ?1 AND tc.descripcion = 'Egreso' " +
+            "WHERE u.id = ?1 AND tc.descripcion = 'Ingreso' " +
             "GROUP BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM') " +
-            "ORDER BY mes")
-    List<Object[]> gastosPorMes(Integer idUsuario);
+            "ORDER BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM')")
+    List<IngresoMesDto> gastosPorMes(Integer idUsuario);
 
     @Query("SELECT t FROM Transacciones t WHERE t.idUsuario.id = ?1 ORDER BY t.fechaTransaccion DESC LIMIT 10")
     List<Transacciones> transaccionesRecientes(Integer idUsuario);
 
-    @Query("SELECT uc.descripcion, SUM(t.monto) " +
+    @Query("SELECT new utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto(uc.descripcion, SUM(t.monto)) " +
             "FROM Transacciones t " +
             "JOIN t.idUsuario u " +
             "JOIN t.idCategoria uc " +
             "JOIN uc.idTipoTra tc " +
             "WHERE u.id = ?1 AND tc.descripcion = 'Egreso' " +
             "GROUP BY uc.descripcion")
-    List<Object[]> gastosPorCategoria(Integer idUsuario);
+    List<CategoriaGastoDto> gastosPorCategoria(Integer idUsuario);
 }

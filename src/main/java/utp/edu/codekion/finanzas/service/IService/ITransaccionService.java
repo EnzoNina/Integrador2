@@ -2,6 +2,8 @@ package utp.edu.codekion.finanzas.service.IService;
 
 import utp.edu.codekion.finanzas.model.Transacciones;
 import utp.edu.codekion.finanzas.model.Usuario;
+import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
+import utp.edu.codekion.finanzas.model.dto.IngresoMesDto;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,15 +32,15 @@ public interface ITransaccionService {
     BigDecimal balanceTotal(Integer id_usuario);
 
     //Obtener los ingresos por mes
-    List<Object[]> ingresosPorMes(Integer id_usuario);
+    List<IngresoMesDto> ingresosPorMes(Integer id_usuario);
 
     //Gastos por mes
-    List<Object[]> gastosPorMes(Integer id_usuario);
+    List<IngresoMesDto> gastosPorMes(Integer id_usuario);
 
     //Transacciones recientes
     List<Transacciones> transaccionesRecientes(Integer id_usuario);
 
     //Gastos por categoria
-    List<Object[]> gastosPorCategoria(Integer id_usuario);
+    List<CategoriaGastoDto> gastosPorCategoria(Integer id_usuario);
 
 }

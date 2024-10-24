@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import utp.edu.codekion.finanzas.model.Transacciones;
 import utp.edu.codekion.finanzas.model.Usuario;
+import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
+import utp.edu.codekion.finanzas.model.dto.IngresoMesDto;
 import utp.edu.codekion.finanzas.repository.TransaccionRepository;
 import utp.edu.codekion.finanzas.service.IService.ITransaccionService;
 
@@ -56,12 +58,12 @@ public class TransaccionesServiceImpl implements ITransaccionService {
     }
 
     @Override
-    public List<Object[]> ingresosPorMes(Integer id_usuario) {
+    public List<IngresoMesDto> ingresosPorMes(Integer id_usuario) {
         return transaccionRepository.ingresosPorMes(id_usuario);
     }
 
     @Override
-    public List<Object[]> gastosPorMes(Integer id_usuario) {
+    public List<IngresoMesDto> gastosPorMes(Integer id_usuario) {
         return transaccionRepository.gastosPorMes(id_usuario);
     }
 
@@ -71,7 +73,7 @@ public class TransaccionesServiceImpl implements ITransaccionService {
     }
 
     @Override
-    public List<Object[]> gastosPorCategoria(Integer id_usuario) {
+    public List<CategoriaGastoDto> gastosPorCategoria(Integer id_usuario) {
         return transaccionRepository.gastosPorCategoria(id_usuario);
     }
 
