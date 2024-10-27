@@ -717,136 +717,41 @@ Datos de entrada
 
 Ejemplo de respuesta
 
-```json
-{
-  "mensaje": "Reporte generado con exito",
-  "resumenTransacciones": {
-    "id": 25,
-    "idUsuario": {
-      "id": 1,
-      "nombres": "Enzo Josue",
-      "apellidop": "Nina",
-      "apellidom": "Aragon",
-      "email": "ninaenzo70@gmail.com",
-      "password": "admin",
-      "username": "ninaenzo70@gmail.com",
-      "authorities": [
-        {
-          "authority": "ROLE_USER"
-        }
-      ],
-      "enabled": true,
-      "credentialsNonExpired": true,
-      "accountNonExpired": true,
-      "accountNonLocked": true
-    },
-    "periodo": "2024-08-01 - 2024-08-10",
-    "transacciones": {
-      "58": {
-        "id": 58,
-        "idCategoria": {
-          "id": 26,
-          "idTipoTra": {
-            "id": 1,
-            "descripcion": "Ingreso"
-          },
-          "idTipoCat": {
-            "id": 1,
-            "descripcion": "Sueldo"
-          },
-          "idUsuario": {
-            "id": 1,
-            "nombres": "Enzo Josue",
-            "apellidop": "Nina",
-            "apellidom": "Aragon",
-            "email": "ninaenzo70@gmail.com",
-            "password": "admin",
-            "username": "ninaenzo70@gmail.com",
-            "authorities": [
-              {
-                "authority": "ROLE_USER"
-              }
-            ],
-            "enabled": true,
-            "credentialsNonExpired": true,
-            "accountNonExpired": true,
-            "accountNonLocked": true
-          },
-          "descripcion": "Sueldo Mensual"
-        },
-        "idConcepto": {
-          "id": 1,
-          "descripcion": "Sueldo Mensual"
-        },
-        "idFrecuencia": {
-          "id": 1,
-          "descripcion": "Diario"
-        },
-        "monto": 2500.00,
-        "divisa": {
-          "id": 1,
-          "codigo": "USD",
-          "nombre": "Dolar estadounidense",
-          "simbolo": "$"
-        },
-        "descripcion": "Sueldo mensual de agosto",
-        "fechaTransaccion": "2024-08-01"
-      },
-      "59": {
-        "id": 59,
-        "idCategoria": {
-          "id": 27,
-          "idTipoTra": {
-            "id": 1,
-            "descripcion": "Ingreso"
-          },
-          "idTipoCat": {
-            "id": 2,
-            "descripcion": "Negocio"
-          },
-          "idUsuario": {
-            "id": 1,
-            "nombres": "Enzo Josue",
-            "apellidop": "Nina",
-            "apellidom": "Aragon",
-            "email": "ninaenzo70@gmail.com",
-            "password": "admin",
-            "username": "ninaenzo70@gmail.com",
-            "authorities": [
-              {
-                "authority": "ROLE_USER"
-              }
-            ],
-            "enabled": true,
-            "credentialsNonExpired": true,
-            "accountNonExpired": true,
-            "accountNonLocked": true
-          },
-          "descripcion": "Ganancias de Negocio"
-        },
-        "idConcepto": {
-          "id": 1,
-          "descripcion": "Sueldo Mensual"
-        },
-        "idFrecuencia": {
-          "id": 3,
-          "descripcion": "Quincenal"
-        },
-        "monto": 350.00,
-        "divisa": {
-          "id": 1,
-          "codigo": "USD",
-          "nombre": "Dolar estadounidense",
-          "simbolo": "$"
-        },
-        "descripcion": "Ganancias de inversiones en agosto",
-        "fechaTransaccion": "2024-08-10"
-      }
-    },
-    "totalIngresos": 2850.00,
-    "totalEgresos": 2850.00,
-    "fechaCreacion": "2024-10-27"
-  }
-}
-```
+Tipo de respuesta: application/pdf
+Contenido: Un archivo PDF que se descarga automáticamente.
 
+Ejemplo de Solicitud desde el Frontend
+A continuación se muestra cómo se podría consumir este endpoint desde el frontend utilizando fetch en JavaScript:
+
+javascript
+Copiar código
+const generarReporte = async (fechaInicio, fechaFin, idUsuario) => {
+    const response = await fetch('/generar_reporte', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            fechaInicio: fechaInicio,
+            fechaFin: fechaFin,
+            id_usuario: idUsuario
+        }),
+    });
+
+    if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'reporte.pdf'; // Nombre del archivo a descargar
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    } else {
+        console.error('Error al generar el reporte');
+    }
+};
+
+// Ejemplo de uso
+generarReporte('2024-01-01', '2024-01-31', '123');
