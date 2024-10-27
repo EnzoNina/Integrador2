@@ -697,3 +697,156 @@ Ejemplo de respuesta
     "Inversiones": 2000.00
 }
 ```
+# Reportes
+
+## Generar Reporte
+
+```http
+  POST /reporte/generar_reporte
+```
+
+Datos de entrada
+
+```json
+{
+  "id_usuario": "1",
+  "fechaInicio": "2024-08-01",
+  "fechaFin": "2024-08-10"
+}
+```
+
+Ejemplo de respuesta
+
+```json
+{
+  "mensaje": "Reporte generado con exito",
+  "resumenTransacciones": {
+    "id": 25,
+    "idUsuario": {
+      "id": 1,
+      "nombres": "Enzo Josue",
+      "apellidop": "Nina",
+      "apellidom": "Aragon",
+      "email": "ninaenzo70@gmail.com",
+      "password": "admin",
+      "username": "ninaenzo70@gmail.com",
+      "authorities": [
+        {
+          "authority": "ROLE_USER"
+        }
+      ],
+      "enabled": true,
+      "credentialsNonExpired": true,
+      "accountNonExpired": true,
+      "accountNonLocked": true
+    },
+    "periodo": "2024-08-01 - 2024-08-10",
+    "transacciones": {
+      "58": {
+        "id": 58,
+        "idCategoria": {
+          "id": 26,
+          "idTipoTra": {
+            "id": 1,
+            "descripcion": "Ingreso"
+          },
+          "idTipoCat": {
+            "id": 1,
+            "descripcion": "Sueldo"
+          },
+          "idUsuario": {
+            "id": 1,
+            "nombres": "Enzo Josue",
+            "apellidop": "Nina",
+            "apellidom": "Aragon",
+            "email": "ninaenzo70@gmail.com",
+            "password": "admin",
+            "username": "ninaenzo70@gmail.com",
+            "authorities": [
+              {
+                "authority": "ROLE_USER"
+              }
+            ],
+            "enabled": true,
+            "credentialsNonExpired": true,
+            "accountNonExpired": true,
+            "accountNonLocked": true
+          },
+          "descripcion": "Sueldo Mensual"
+        },
+        "idConcepto": {
+          "id": 1,
+          "descripcion": "Sueldo Mensual"
+        },
+        "idFrecuencia": {
+          "id": 1,
+          "descripcion": "Diario"
+        },
+        "monto": 2500.00,
+        "divisa": {
+          "id": 1,
+          "codigo": "USD",
+          "nombre": "Dolar estadounidense",
+          "simbolo": "$"
+        },
+        "descripcion": "Sueldo mensual de agosto",
+        "fechaTransaccion": "2024-08-01"
+      },
+      "59": {
+        "id": 59,
+        "idCategoria": {
+          "id": 27,
+          "idTipoTra": {
+            "id": 1,
+            "descripcion": "Ingreso"
+          },
+          "idTipoCat": {
+            "id": 2,
+            "descripcion": "Negocio"
+          },
+          "idUsuario": {
+            "id": 1,
+            "nombres": "Enzo Josue",
+            "apellidop": "Nina",
+            "apellidom": "Aragon",
+            "email": "ninaenzo70@gmail.com",
+            "password": "admin",
+            "username": "ninaenzo70@gmail.com",
+            "authorities": [
+              {
+                "authority": "ROLE_USER"
+              }
+            ],
+            "enabled": true,
+            "credentialsNonExpired": true,
+            "accountNonExpired": true,
+            "accountNonLocked": true
+          },
+          "descripcion": "Ganancias de Negocio"
+        },
+        "idConcepto": {
+          "id": 1,
+          "descripcion": "Sueldo Mensual"
+        },
+        "idFrecuencia": {
+          "id": 3,
+          "descripcion": "Quincenal"
+        },
+        "monto": 350.00,
+        "divisa": {
+          "id": 1,
+          "codigo": "USD",
+          "nombre": "Dolar estadounidense",
+          "simbolo": "$"
+        },
+        "descripcion": "Ganancias de inversiones en agosto",
+        "fechaTransaccion": "2024-08-10"
+      }
+    },
+    "totalIngresos": 2850.00,
+    "totalEgresos": 2850.00,
+    "fechaCreacion": "2024-10-27"
+  }
+}
+```
+

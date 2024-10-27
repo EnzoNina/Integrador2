@@ -1,5 +1,6 @@
 package utp.edu.codekion.finanzas.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +14,9 @@ import utp.edu.codekion.finanzas.model.dto.FechasAndUsuarioDto;
 import utp.edu.codekion.finanzas.service.IService.IResumenTransaccionService;
 import utp.edu.codekion.finanzas.service.IService.ITransaccionService;
 import utp.edu.codekion.finanzas.service.IService.IUsuarioService;
+import utp.edu.codekion.finanzas.utils.ReportePdfGenerate;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -28,28 +31,40 @@ public class ReporteController {
     private final ITransaccionService transaccionService;
     private final IResumenTransaccionService resumenTransaccionService;
     private final IUsuarioService usuarioService;
-    //Generar Reporte
+
+    // Generar Reporte
     @PostMapping("/generar_reporte")
-    public void generarReporte(@RequestBody FechasAndUsuarioDto fechasDto) {
-        //Obtenemos lo necesario para el reporte
+    public void generarReporte(@RequestBody FechasAndUsuarioDto fechasDto, HttpServletResponse response) {
+
+        // Obtenemos lo necesario para el reporte
         List<Transacciones> transaccionesLst = transaccionService.findByFechaTransaccionBetween(fechasDto.getFechaInicio(), fechasDto.getFechaFin());
-        for (Transacciones transaccion : transaccionesLst) {
-            log.info("Transaccion: " + transaccion);
-        }
         BigDecimal ingresos = transaccionService.totalIngresosEntreFechas(fechasDto.getFechaInicio(), fechasDto.getFechaFin());
-        log.info("Ingresos: " + ingresos);
         BigDecimal egresos = transaccionService.totalEgresosEntreFechas(fechasDto.getFechaInicio(), fechasDto.getFechaFin());
-        log.info("Egresos: " + egresos);
         Usuario usuario = usuarioService.findById(Integer.valueOf(fechasDto.getId_usuario()));
-        log.info("Usuario: " + usuario);
-        //Creamos el objeto Resumen Transacciones
+
+        // Creamos el objeto Resumen Transacciones
         ResumenTransacciones resumenTransacciones = new ResumenTransacciones();
         resumenTransacciones.setIdUsuario(usuario);
         resumenTransacciones.setPeriodo(fechasDto.getFechaInicio() + " - " + fechasDto.getFechaFin());
         resumenTransacciones.setTransacciones(convertirTransaccionesAJson(transaccionesLst));
         resumenTransacciones.setTotalIngresos(ingresos);
         resumenTransacciones.setTotalEgresos(egresos);
-        resumenTransaccionService.save(resumenTransacciones);
+        ResumenTransacciones save = resumenTransaccionService.save(resumenTransacciones);
+
+        // Creamos el reporte en formato PDF
+        byte[] bytesPdf = ReportePdfGenerate.generarReporte(save, transaccionesLst);
+
+        // Configuración de respuesta para que el PDF se descargue automáticamente
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=reporte.pdf");
+        response.setContentLength(bytesPdf.length);
+
+        try {
+            response.getOutputStream().write(bytesPdf);
+            response.getOutputStream().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private Map<String, Object> convertirTransaccionesAJson(List<Transacciones> transaccionesLst) {
