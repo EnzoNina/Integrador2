@@ -6,6 +6,7 @@ import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
 import utp.edu.codekion.finanzas.model.dto.IngresoMesDto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ITransaccionService {
@@ -42,5 +43,14 @@ public interface ITransaccionService {
 
     //Gastos por categoria
     List<CategoriaGastoDto> gastosPorCategoria(Integer id_usuario);
+
+    //Obtener transacciones entre rango de fechas
+    List<Transacciones> findByFechaTransaccionBetween(LocalDate fechaInicio, LocalDate fechaFin);
+
+    //Obtener total ingresos entre rango de fechas
+    BigDecimal totalIngresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin);
+
+    //Obtener total egresos entre rango de fechas
+    BigDecimal totalEgresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin);
 
 }

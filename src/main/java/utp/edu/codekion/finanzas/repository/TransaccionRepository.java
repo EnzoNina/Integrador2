@@ -8,6 +8,7 @@ import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
 import utp.edu.codekion.finanzas.model.dto.IngresoMesDto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TransaccionRepository extends JpaRepository<Transacciones, Integer> {
@@ -52,4 +53,13 @@ public interface TransaccionRepository extends JpaRepository<Transacciones, Inte
             "WHERE u.id = ?1 AND tc.descripcion = 'Egreso' " +
             "GROUP BY uc.descripcion")
     List<CategoriaGastoDto> gastosPorCategoria(Integer idUsuario);
+
+    @Query("SELECT t FROM Transacciones t WHERE t.fechaTransaccion BETWEEN ?1 AND ?2")
+    List<Transacciones> findByFechaTransaccionBetween(LocalDate fechaInicio, LocalDate fechaFin);
+
+    @Query("SELECT SUM(t.monto) FROM Transacciones t WHERE t.fechaTransaccion BETWEEN ?1 AND ?2")
+    BigDecimal totalIngresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin);
+
+    @Query("SELECT SUM(t.monto) FROM Transacciones t WHERE t.fechaTransaccion BETWEEN ?1 AND ?2")
+    BigDecimal totalEgresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin);
 }

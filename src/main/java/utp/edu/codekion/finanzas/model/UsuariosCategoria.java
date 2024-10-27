@@ -17,15 +17,15 @@ public class UsuariosCategoria {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_tipo_tra")
     private TipoTransaccion idTipoTra;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_tipo_cat")
     private Categoria idTipoCat;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario idUsuario;
 

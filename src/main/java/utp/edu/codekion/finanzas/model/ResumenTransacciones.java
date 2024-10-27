@@ -3,6 +3,7 @@ package utp.edu.codekion.finanzas.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -14,8 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "resumen_transacciones")
 public class ResumenTransacciones {
@@ -26,7 +26,7 @@ public class ResumenTransacciones {
     private Integer id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario idUsuario;
@@ -50,15 +50,12 @@ public class ResumenTransacciones {
     private BigDecimal totalEgresos;
 
     @NotNull
-    @Column(name = "total_ahorro", nullable = false, precision = 12, scale = 2)
-    private BigDecimal totalAhorro;
-
-    @NotNull
-    @Column(name = "total_deuda", nullable = false, precision = 12, scale = 2)
-    private BigDecimal totalDeuda;
-
-    @NotNull
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDate fechaCreacion;
+
+    @PrePersist
+    public void prePersist() {
+        fechaCreacion = LocalDate.now();
+    }
 
 }

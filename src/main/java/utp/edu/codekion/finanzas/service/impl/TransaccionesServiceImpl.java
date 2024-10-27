@@ -10,6 +10,7 @@ import utp.edu.codekion.finanzas.repository.TransaccionRepository;
 import utp.edu.codekion.finanzas.service.IService.ITransaccionService;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -75,6 +76,21 @@ public class TransaccionesServiceImpl implements ITransaccionService {
     @Override
     public List<CategoriaGastoDto> gastosPorCategoria(Integer id_usuario) {
         return transaccionRepository.gastosPorCategoria(id_usuario);
+    }
+
+    @Override
+    public List<Transacciones> findByFechaTransaccionBetween(LocalDate fechaInicio, LocalDate fechaFin) {
+        return transaccionRepository.findByFechaTransaccionBetween(fechaInicio, fechaFin);
+    }
+
+    @Override
+    public BigDecimal totalIngresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin) {
+        return transaccionRepository.totalIngresosEntreFechas(fechaInicio, fechaFin);
+    }
+
+    @Override
+    public BigDecimal totalEgresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin) {
+        return transaccionRepository.totalEgresosEntreFechas(fechaInicio, fechaFin);
     }
 
 
