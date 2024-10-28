@@ -3,7 +3,6 @@ package utp.edu.codekion.finanzas.utils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import utp.edu.codekion.finanzas.model.ResumenTransacciones;
 import utp.edu.codekion.finanzas.model.Transacciones;
 
