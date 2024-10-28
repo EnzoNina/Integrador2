@@ -22,7 +22,6 @@ public class ReportePdfGenerate {
 
             // Crear flujo de contenido para la página
             try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
-                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
                 contentStream.beginText();
                 contentStream.setLeading(14.5f);
                 contentStream.newLineAtOffset(50, 750);
