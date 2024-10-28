@@ -1,6 +1,7 @@
 package utp.edu.codekion.finanzas.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
+@Log
 public class DashboardController {
 
     private final ITransaccionService transaccionService;
@@ -35,7 +37,11 @@ public class DashboardController {
     @GetMapping("/ingresos_por_mes/{id}")
     public ResponseEntity<?> ingresosPorMes(@PathVariable Integer id) {
         Map<String, Object> response = new HashMap<>();
-        response.put("ingresos", transaccionService.ingresosPorMes(id));
+        List<IngresoMesDto> lstIngresos = transaccionService.ingresosPorMes(id);
+        for(IngresoMesDto ingreso : lstIngresos){
+            log.info(ingreso.toString());
+        }
+        response.put("ingresos", lstIngresos);
         response.put("status", "success");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -44,7 +50,11 @@ public class DashboardController {
     @GetMapping("/egresos_por_mes/{id}")
     public ResponseEntity<?> gastosPorMes(@PathVariable Integer id) {
         Map<String, Object> response = new HashMap<>();
-        response.put("egresos", transaccionService.gastosPorMes(id));
+        List<IngresoMesDto> lstEgreso = transaccionService.gastosPorMes(id);
+        for(IngresoMesDto ingreso : lstEgreso){
+            log.info(ingreso.toString());
+        }
+        response.put("egresos", lstEgreso);
         response.put("status", "success");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
