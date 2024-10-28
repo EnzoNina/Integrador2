@@ -1,9 +1,9 @@
 package utp.edu.codekion.finanzas.utils;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import utp.edu.codekion.finanzas.model.ResumenTransacciones;
 import utp.edu.codekion.finanzas.model.Transacciones;
 
@@ -14,40 +14,59 @@ import java.util.List;
 public class ReportePdfGenerate {
 
     public static byte[] generarReporte(ResumenTransacciones resumen, List<Transacciones> lstTransacciones) {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            // Crea un nuevo documento de iText
-            Document document = new Document();
+        try (PDDocument document = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-            // Usa PdfWriter para asociar el documento al OutputStream
-            PdfWriter.getInstance(document, baos);
+            // Crear una nueva página
+            PDPage page = new PDPage();
+            document.addPage(page);
 
-            // Abre el documento
-            document.open();
+            // Crear flujo de contenido para la página
+            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                contentStream.beginText();
+                contentStream.setLeading(14.5f);
+                contentStream.newLineAtOffset(50, 750);
 
-            // Agrega detalles del usuario
-            document.add(new Paragraph("Reporte de Transacciones"));
-            document.add(new Paragraph("Usuario: " + resumen.getIdUsuario().getNombres() + " " + resumen.getIdUsuario().getApellidop()));
-            document.add(new Paragraph("Periodo: " + resumen.getPeriodo()));
+                // Agregar título y detalles del usuario
+                contentStream.showText("Reporte de Transacciones");
+                contentStream.newLine();
+                contentStream.newLine();
+                contentStream.showText("Usuario: " + resumen.getIdUsuario().getNombres() + " " + resumen.getIdUsuario().getApellidop());
+                contentStream.newLine();
+                contentStream.showText("Periodo: " + resumen.getPeriodo());
+                contentStream.newLine();
+                contentStream.newLine();
 
-            // Agrega un resumen de ingresos y egresos
-            document.add(new Paragraph("Total de Ingresos: $" + resumen.getTotalIngresos()));
-            document.add(new Paragraph("Total de Egresos: $" + resumen.getTotalEgresos()));
+                // Agregar resumen de ingresos y egresos
+                contentStream.showText("Total de Ingresos: $" + resumen.getTotalIngresos());
+                contentStream.newLine();
+                contentStream.showText("Total de Egresos: $" + resumen.getTotalEgresos());
+                contentStream.newLine();
+                contentStream.newLine();
 
-            // Agrega detalles de cada transacción
-            for (Transacciones transaccion : lstTransacciones) {
-                document.add(new Paragraph("Transacción: " + transaccion.getDescripcion()));
-                document.add(new Paragraph("Fecha: " + transaccion.getFechaTransaccion()));
-                document.add(new Paragraph("Monto: $" + transaccion.getMonto()));
+                // Agregar detalles de cada transacción
+                for (Transacciones transaccion : lstTransacciones) {
+                    contentStream.showText("Transacción: " + transaccion.getDescripcion());
+                    contentStream.newLine();
+                    contentStream.showText("Fecha: " + transaccion.getFechaTransaccion());
+                    contentStream.newLine();
+                    contentStream.showText("Monto: $" + transaccion.getMonto());
+                    contentStream.newLine();
+                    contentStream.newLine();
+                }
+
+                contentStream.endText();
             }
 
-            // Cierra el documento
-            document.close();
+            // Guardar el documento en el OutputStream
+            document.save(baos);
 
-            // Devuelve el contenido del PDF como un array de bytes
+            // Devolver el contenido del PDF como array de bytes
             return baos.toByteArray();
-        } catch (DocumentException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
+
 }
