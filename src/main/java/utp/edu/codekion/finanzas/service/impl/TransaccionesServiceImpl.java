@@ -84,13 +84,13 @@ public class TransaccionesServiceImpl implements ITransaccionService {
     }
 
     @Override
-    public BigDecimal totalIngresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin) {
-        return transaccionRepository.totalIngresosEntreFechas(fechaInicio, fechaFin);
+    public BigDecimal totalIngresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin,Integer id_usuario) {
+        return transaccionRepository.totalIngresosEntreFechas(fechaInicio, fechaFin, id_usuario);
     }
 
     @Override
-    public BigDecimal totalEgresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin) {
-        return transaccionRepository.totalEgresosEntreFechas(fechaInicio, fechaFin);
+    public BigDecimal totalEgresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin,Integer id_usuario) {
+        return transaccionRepository.totalEgresosEntreFechas(fechaInicio, fechaFin, id_usuario);
     }
 
 

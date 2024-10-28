@@ -38,8 +38,8 @@ public class ReporteController {
 
         // Obtenemos lo necesario para el reporte
         List<Transacciones> transaccionesLst = transaccionService.findByFechaTransaccionBetween(fechasDto.getFechaInicio(), fechasDto.getFechaFin());
-        BigDecimal ingresos = transaccionService.totalIngresosEntreFechas(fechasDto.getFechaInicio(), fechasDto.getFechaFin());
-        BigDecimal egresos = transaccionService.totalEgresosEntreFechas(fechasDto.getFechaInicio(), fechasDto.getFechaFin());
+        BigDecimal ingresos = transaccionService.totalIngresosEntreFechas(fechasDto.getFechaInicio(), fechasDto.getFechaFin(), Integer.valueOf(fechasDto.getId_usuario()));
+        BigDecimal egresos = transaccionService.totalEgresosEntreFechas(fechasDto.getFechaInicio(), fechasDto.getFechaFin(), Integer.valueOf(fechasDto.getId_usuario()));
         Usuario usuario = usuarioService.findById(Integer.valueOf(fechasDto.getId_usuario()));
 
         // Creamos el objeto Resumen Transacciones
