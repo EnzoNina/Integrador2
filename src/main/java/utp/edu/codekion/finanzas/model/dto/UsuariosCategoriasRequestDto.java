@@ -1,8 +1,8 @@
 package utp.edu.codekion.finanzas.model.dto;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class UsuariosCategoriasRequestDto {
 
     private String id_usuario;

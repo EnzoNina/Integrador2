@@ -1,10 +1,11 @@
 package utp.edu.codekion.finanzas.model.dto;
 
+import lombok.Data;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
-@Getter
+@Data
 public class TransaccionDto {
 
     private String id_usuario;

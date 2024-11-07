@@ -1,10 +1,10 @@
 package utp.edu.codekion.finanzas.model.dto;
 
-import lombok.Getter;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
+@Data
 public class PresupuestoUpdateDto {
 
     private String nombre;

@@ -35,7 +35,7 @@ public class TransaccionController {
     private final IPresupuestoService presupuestoService;
 
     @PostMapping("/listar")
-    private ResponseEntity<?> listarTransacciones(@RequestBody UsuarioDto dto) {
+    public ResponseEntity<?> listarTransacciones(@RequestBody UsuarioDto dto) {
         response.clear();
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
         List<Transacciones> transaccionesListUsuario = transaccionService.findByUsuario(usuario);
@@ -51,7 +51,7 @@ public class TransaccionController {
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<?> buscarTransaccion(@PathVariable Integer id) {
+    public ResponseEntity<?> buscarTransaccion(@PathVariable Integer id) {
         response.clear();
         Transacciones transaccion = transaccionService.findById(id);
         if (transaccion == null) {
@@ -84,7 +84,7 @@ public class TransaccionController {
     }
 
     @PostMapping("/guardar")
-    private ResponseEntity<?> guardarTransaccion(@RequestBody TransaccionDto dto) {
+    public ResponseEntity<?> guardarTransaccion(@RequestBody TransaccionDto dto) {
         response.clear();
         //Buscamos la categoria y el usuario
         UsuariosCategoria categoria = usuarioCategoriaService.findById(Integer.valueOf(dto.getId_tipo_categoria()));

@@ -29,7 +29,7 @@ public class PresupuestoController {
     private final IUsuarioCategoriaService usuariosCategoriaService;
 
     @PostMapping("/listar/usuario")
-    private ResponseEntity<?> listarPresupuestosPorUsuario(@RequestBody UsuarioDto dto) {
+    public ResponseEntity<?> listarPresupuestosPorUsuario(@RequestBody UsuarioDto dto) {
         Map<String, Object> response = new HashMap<>();
 
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
@@ -45,7 +45,7 @@ public class PresupuestoController {
     }
 
     @PostMapping("/buscar")
-    private ResponseEntity<?> mostrarPresupuesto(@RequestBody FindPresupuestoDto dto) {
+    public ResponseEntity<?> mostrarPresupuesto(@RequestBody FindPresupuestoDto dto) {
         Map<String, Object> response = new HashMap<>();
 
         UsuariosCategoria categoria = usuariosCategoriaService.findById(Integer.valueOf(dto.getId_categoria_usuario()));
@@ -78,7 +78,7 @@ public class PresupuestoController {
     }
 
     @PostMapping("/guardar")
-    private ResponseEntity<?> guardarPresupuesto(@RequestBody PresupuestoDto dto) {
+    public ResponseEntity<?> guardarPresupuesto(@RequestBody PresupuestoDto dto) {
 
         Map<String, Object> response = new HashMap<>();
 
@@ -121,7 +121,7 @@ public class PresupuestoController {
     }
 
     @PutMapping("/actualizar/{id}")
-    private ResponseEntity<?> actualizarPresupuesto(@RequestBody PresupuestoUpdateDto dto, @PathVariable(name = "id") String id) {
+    public ResponseEntity<?> actualizarPresupuesto(@RequestBody PresupuestoUpdateDto dto, @PathVariable(name = "id") String id) {
 
         Map<String, Object> response = new HashMap<>();
 

@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authRequest ->
                         authRequest
-                                .requestMatchers("/auth/**","/categoria/**","/transaccion/**","/presupuesto/**").permitAll()
+                                .requestMatchers("/auth/**","/categoria/**","/transaccion/**","/presupuesto/**","/chatbot/**").permitAll()
                                 .anyRequest().authenticated())
                 .exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler()))
                 // Se establece la politica de sesiones como STATELESS para no guardar sesiones en el servidor y que cada peticion sea independiente de las demas, para evitar problemas de seguridad

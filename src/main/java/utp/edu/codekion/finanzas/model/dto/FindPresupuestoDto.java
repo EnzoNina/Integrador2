@@ -1,8 +1,9 @@
 package utp.edu.codekion.finanzas.model.dto;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+
+@Data
 public class FindPresupuestoDto {
 
     private String id_categoria_usuario;

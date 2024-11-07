@@ -2,6 +2,7 @@ package utp.edu.codekion.finanzas.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Value;
 
@@ -10,8 +11,7 @@ import java.io.Serializable;
 /**
  * DTO for {@link utp.edu.codekion.finanzas.model.Usuario}
  */
-@Getter
-@Value
+@Data
 public class RegistrarDto implements Serializable {
     @NotNull
     @Size(max = 50)
