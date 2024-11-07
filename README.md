@@ -590,10 +590,8 @@ Ejemplo de respuesta
 
 Ejemplo de respuesta
 
-```json
-{
-  1000.00
-}
+```number
+1000.00
 ```
 
 ## Ingresos por mes
@@ -723,8 +721,8 @@ Contenido: Un archivo PDF que se descarga automáticamente.
 Ejemplo de Solicitud desde el Frontend
 A continuación se muestra cómo se podría consumir este endpoint desde el frontend utilizando fetch en JavaScript:
 
-javascript
-Copiar código
+```javascript
+
 const generarReporte = async (fechaInicio, fechaFin, idUsuario) => {
     const response = await fetch('/generar_reporte', {
         method: 'POST',
@@ -752,6 +750,24 @@ const generarReporte = async (fechaInicio, fechaFin, idUsuario) => {
         console.error('Error al generar el reporte');
     }
 };
+```
 
-// Ejemplo de uso
-generarReporte('2024-01-01', '2024-01-31', '123');
+# ChatBot
+## Enviar Mensaje
+
+```http
+  POST /chatbot/enviarMensaje
+```
+
+Datos de entrada
+
+```json
+{
+  "message": "Hola, ¿cómo estás?"
+}
+```
+Ejemplo de respuesta
+
+```text
+¡Hola! Estoy bien, ¿y tú?
+```

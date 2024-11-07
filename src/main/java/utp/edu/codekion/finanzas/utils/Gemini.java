@@ -121,7 +121,6 @@ public class Gemini {
         return "Error al parsear la respuesta.";
     }
 
-
     // Inner class to represent messages
     static class Message {
         String role;
