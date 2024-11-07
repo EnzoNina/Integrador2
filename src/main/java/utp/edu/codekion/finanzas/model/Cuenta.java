@@ -3,8 +3,7 @@ package utp.edu.codekion.finanzas.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -13,6 +12,9 @@ import org.hibernate.annotations.OnDeleteAction;
 @Setter
 @Entity
 @Table(name = "cuentas")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cuenta {
     @Id
     @ColumnDefault("nextval('cuentas_id_seq'::regclass)")
@@ -20,13 +22,13 @@ public class Cuenta {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "banco", nullable = false)
     private Banco banco;
 
@@ -41,7 +43,7 @@ public class Cuenta {
     private String numCuentaInterbancario;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "tipo_cuenta", nullable = false)
     private TipoCuenta tipoCuenta;
 
@@ -49,7 +51,7 @@ public class Cuenta {
     @Column(name = "num_tarjeta", length = 16)
     private String numTarjeta;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "tipo_tarjeta")
     private TipoTarjeta tipoTarjeta;
 
