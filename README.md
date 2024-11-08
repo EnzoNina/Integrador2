@@ -763,6 +763,7 @@ Datos de entrada
 
 ```json
 {
+  "id_usuario": "1",
   "message": "Hola, ¿cómo estás?"
 }
 ```
