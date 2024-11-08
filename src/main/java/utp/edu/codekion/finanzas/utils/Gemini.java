@@ -3,9 +3,15 @@ package utp.edu.codekion.finanzas.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.Data;
 import org.springframework.stereotype.Component;
+import utp.edu.codekion.finanzas.model.Transacciones;
+import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
+import utp.edu.codekion.finanzas.model.dto.IngresoMesDto;
+import utp.edu.codekion.finanzas.model.dto.TransaccionResponseDto;
 
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -13,8 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+@Data
 @Component
 public class Gemini {
+
+    BigDecimal balanceTotal = new BigDecimal(0);
+    List<IngresoMesDto> lstIngresos = new ArrayList<>();
+    List<IngresoMesDto> lstEgreso = new ArrayList<>();
+    List<Transacciones> transacciones = new ArrayList<>();
+    //Creamos una lista de transacciones de respuesta
+    List<CategoriaGastoDto> categoriaGastoDtos = new ArrayList<>();
 
     private static final String API_KEY = "AIzaSyBXbORN8NDbfO1yjc-1W9OpYOYLBRgATBM";
     private static final String URL_STRING = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
@@ -38,7 +52,7 @@ public class Gemini {
         }
     }
 
-    private static String getBotResponse() {
+    private String getBotResponse() {
         try {
             URL url = new URL(URL_STRING);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -59,7 +73,8 @@ public class Gemini {
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 try (Scanner responseScanner = new Scanner(conn.getInputStream(), StandardCharsets.UTF_8.name())) {
-                    String response = responseScanner.useDelimiter("\\A").next();System.out.println(response);
+                    String response = responseScanner.useDelimiter("\\A").next();
+                    System.out.println(response);
                     return parseResponse(response);
                 }
             } else {
@@ -73,7 +88,30 @@ public class Gemini {
         return null;
     }
 
-    private static String generateJsonBody(List<Message> history) {
+    private String generateJsonBody(List<Message> history) {
+
+        StringBuilder  systemInstructionMessage = new StringBuilder();
+        systemInstructionMessage.append("Eres CodekionBot, un asistente virtual diseñado para ayudar a los usuarios con consultas relacionadas con sus transacciones financieras. Puedes proporcionar información actualizada sobre las últimas transacciones, categorías con mayores gastos, presupuestos, y responder a cualquier otra consulta general relacionada con la gestión financiera. Además, podrás ofrecer recomendaciones y sugerencias basadas en los datos disponibles, ya sea según tu análisis personal o según información relevante que encuentres en Internet. Tu objetivo es proporcionar respuestas claras, útiles y completas, adaptándote al tono y contexto de cada usuario.");
+        systemInstructionMessage.append("Tu balance total es: ").append(balanceTotal).append(". ");
+        systemInstructionMessage.append("Ingresos mensuales:\n");
+        for (IngresoMesDto ingreso : lstIngresos) {
+            systemInstructionMessage.append(" - Mes ").append(ingreso.getMes()).append(": ").append(ingreso.getTotal()).append("\n");
+        }
+        systemInstructionMessage.append("Gastos mensuales:\n");
+        for (IngresoMesDto egreso : lstEgreso) {
+            systemInstructionMessage.append(" - Mes ").append(egreso.getMes()).append(": ").append(egreso.getTotal()).append("\n");
+        }
+        systemInstructionMessage.append("Transacciones recientes:\n");
+        for (Transacciones transaccion : transacciones) {
+            systemInstructionMessage.append(" - ").append(transaccion.getDescripcion()).append(": ").append(transaccion.getMonto()).append("\n");
+        }
+        systemInstructionMessage.append("Gastos por categoría:\n");
+        for (CategoriaGastoDto categoria : categoriaGastoDtos) {
+            systemInstructionMessage.append(" - ").append(categoria.getDescripcion()).append(": ").append(categoria.getMonto()).append("\n");
+        }
+
+        System.out.println(systemInstructionMessage);
+
         StringBuilder jsonBuilder = new StringBuilder();
         jsonBuilder.append("{\n");
         jsonBuilder.append("  \"contents\": [\n");
@@ -86,7 +124,8 @@ public class Gemini {
         }
 
         jsonBuilder.append("  ],\n");
-        jsonBuilder.append("  \"systemInstruction\": { \"role\": \"user\", \"parts\": [{ \"text\": \"Eres CodekionBot, un asistente virtual...\" }] },\n");
+
+        jsonBuilder.append("  \"systemInstruction\": { \"role\": \"user\", \"parts\": [{ \"text\": \"").append(systemInstructionMessage).append("\" }] },\n");
         jsonBuilder.append("  \"generationConfig\": {\n");
         jsonBuilder.append("    \"temperature\": 1.7,\n");
         jsonBuilder.append("    \"topK\": 40,\n");
