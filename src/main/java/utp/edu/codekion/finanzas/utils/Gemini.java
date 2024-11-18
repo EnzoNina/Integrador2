@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import utp.edu.codekion.finanzas.model.Transacciones;
 import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
 import utp.edu.codekion.finanzas.model.dto.IngresoMesDto;
-import utp.edu.codekion.finanzas.model.dto.TransaccionResponseDto;
 
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -127,7 +126,7 @@ public class Gemini {
 
         jsonBuilder.append("  \"systemInstruction\": { \"role\": \"user\", \"parts\": [{ \"text\": \"").append(systemInstructionMessage).append("\" }] },\n");
         jsonBuilder.append("  \"generationConfig\": {\n");
-        jsonBuilder.append("    \"temperature\": 1.7,\n");
+        jsonBuilder.append("    \"temperature\": 1,\n");
         jsonBuilder.append("    \"topK\": 40,\n");
         jsonBuilder.append("    \"topP\": 0.95,\n");
         jsonBuilder.append("    \"maxOutputTokens\": 8192,\n");
