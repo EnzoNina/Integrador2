@@ -1,5 +1,6 @@
 package utp.edu.codekion.finanzas.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -61,6 +62,7 @@ public class Transacciones {
     private String descripcion;
 
     @Column(name = "fecha_transaccion")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate fechaTransaccion;
 
     @PrePersist
