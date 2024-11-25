@@ -3,6 +3,8 @@ package utp.edu.codekion.finanzas.utils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
 import utp.edu.codekion.finanzas.model.ResumenTransacciones;
 import utp.edu.codekion.finanzas.model.Transacciones;
 
@@ -22,6 +24,7 @@ public class ReportePdfGenerate {
             // Crear flujo de contenido para la página
             try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
                 contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA, 12);
                 contentStream.setLeading(14.5f);
                 contentStream.newLineAtOffset(50, 750);
 

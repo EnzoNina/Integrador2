@@ -129,7 +129,7 @@ public class Gemini {
         jsonBuilder.append("    \"temperature\": 1,\n");
         jsonBuilder.append("    \"topK\": 40,\n");
         jsonBuilder.append("    \"topP\": 0.95,\n");
-        jsonBuilder.append("    \"maxOutputTokens\": 8192,\n");
+        jsonBuilder.append("    \"maxOutputTokens\": 400,\n");
         jsonBuilder.append("    \"responseMimeType\": \"text/plain\"\n");
         jsonBuilder.append("  }\n");
         jsonBuilder.append("}");
