@@ -29,8 +29,8 @@ public class Gemini {
     //Creamos una lista de transacciones de respuesta
     List<CategoriaGastoDto> categoriaGastoDtos = new ArrayList<>();
 
-    private static final String API_KEY = "AIzaSyCtJkZjlwV5Z6KguXv8PEFOAJJ4IzYNxxo";
-    private static final String URL_STRING = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+    private static final String API_KEY = "AIzaSyBOiRtJ7umQmkJGL3LoNIpube7v6yXkKR4";
+    private static final String URL_STRING = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" + API_KEY;
 
     // List to keep track of the conversation history
     private static final List<Message> conversationHistory = new ArrayList<>();
@@ -127,7 +127,7 @@ public class Gemini {
         jsonBuilder.append("    \"temperature\": 1,\n");
         jsonBuilder.append("    \"topK\": 40,\n");
         jsonBuilder.append("    \"topP\": 0.95,\n");
-        jsonBuilder.append("    \"maxOutputTokens\": 400,\n");
+        jsonBuilder.append("    \"maxOutputTokens\": 1000,\n");
         jsonBuilder.append("    \"responseMimeType\": \"text/plain\"\n");
         jsonBuilder.append("  }\n");
         jsonBuilder.append("}");
