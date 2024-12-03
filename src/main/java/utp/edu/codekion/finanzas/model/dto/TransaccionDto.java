@@ -1,7 +1,6 @@
 package utp.edu.codekion.finanzas.model.dto;
 
 import lombok.Data;
-import lombok.Getter;
 
 import java.math.BigDecimal;
 
@@ -15,5 +14,6 @@ public class TransaccionDto {
     private String id_tipo_divisa;
     private BigDecimal monto;
     private String descripcion;
+    private String id_cuenta;
 
 }

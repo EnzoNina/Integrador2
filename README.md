@@ -224,7 +224,8 @@ Datos de entrada
 
 ```json
 {
-  "id_usuario": "<id_usuario>"
+  "id_usuario": "<id_usuario>",
+  "id_cuenta": "<id_cuenta>"
 }
 ```
 
@@ -269,7 +270,8 @@ Ejemplo de repuesta
     "usuario": "adminadmin",
     "nombre": "Presupuesto de gastos personales",
     "descripcion": "Maximo de 1000",
-    "monto": "1000.00"
+    "monto": "1000.00",
+    "numeroCuenta": "123456789"
   },
   "mensaje": "Presupuesto encontrado"
 }
@@ -289,7 +291,8 @@ Datos de entrada
   "id_categoria_usuario": "<id_categoria>",
   "nombre": "<nombre>",
   "descripcion": "<descripcion>",
-  "monto": "<monto>"
+  "monto": "<monto>",
+  "id_cuenta": "<id_cuenta>"
 }
 ```
 
@@ -314,11 +317,12 @@ Datos de entrada
 {
   "nombre": "",
   "descripcion": "",
-  "monto": {}
+  "monto": {},
+  "id_cuenta": "12312312"
 }
 ```
 
-Ejemlo de respuesta
+Ejemplo de respuesta
 
 ```json
 {
@@ -498,7 +502,8 @@ Ejemplo de respuesta
       "divisa": "$",
       "monto": "1000.00",
       "descripcion": "Gasto",
-      "fecha": "2024-09-22"
+      "fecha": "2024-09-22",
+      "numeroCuenta": "123456789"
     },
     {
       "id": 3,
@@ -510,7 +515,8 @@ Ejemplo de respuesta
       "divisa": "$",
       "monto": "100.00",
       "descripcion": "Gasto",
-      "fecha": "2024-09-22"
+      "fecha": "2024-09-22",
+      "numeroCuenta": "123456789"
     }
   ]
 }
@@ -540,7 +546,8 @@ Ejemplo de respuesta
     "divisa": "$",
     "monto": "1000.00",
     "descripcion": "Gasto",
-    "fecha": "2024-09-22"
+    "fecha": "2024-09-22",
+    "numeroCuenta": "123456789"
   },
   "mensaje": "Transacción encontrada.",
   "status": "OK"
@@ -563,7 +570,8 @@ Datos de entrada
   "id_tipo_frecuencia": "<id_tipo_frecuencia>",
   "id_tipo_divisa": "<id_tipo_divisa>",
   "monto": "<monto>",
-  "descripcion": "<descripcion>"
+  "descripcion": "<descripcion>",
+  "id_cuenta": "<id_cuenta>"
 }
 ```
 
@@ -581,12 +589,13 @@ Ejemplo de respuesta
 
 
 ```http
-  GET /dashboard/balance/{id}
+  GET /dashboard/balance/{id}/{id_cuenta}
 ```
 
-| Parameter | Type      | Description                  |
-|:----------|:----------|:-----------------------------|
-| `id`      | `Integer` | **Requiere**. Id del usuario |
+| Parameter   | Type      | Description                   |
+|:------------|:----------|:------------------------------|
+| `id`        | `Integer` | **Requiere**. Id del usuario  |
+| `id_cuenta` | `Integer` | **Requiere**. Id de la cuenta |
 
 Ejemplo de respuesta
 
@@ -616,6 +625,29 @@ Ejemplo de respuesta
 }
 ```
 
+## Ingresos por mes y cuenta
+
+```http
+  GET /dashboard/ingresos_por_mes/{id}/{id_cuenta}
+```
+
+| Parameter   | Type      | Description                   |
+|:------------|:----------|:------------------------------|
+| `id`        | `Integer` | **Requiere**. Id del usuario  |
+| `id_cuenta` | `Integer` | **Requiere**. Id de la cuenta |
+
+Ejemplo de respuesta
+
+```json
+{
+  "status": "success",
+  "ingresos": {
+    "2024-09": 1000.00,
+    "2024-10": 2000.00
+  }
+}
+```
+
 ## Egresos por mes
 
 ```http
@@ -625,6 +657,29 @@ Ejemplo de respuesta
 | Parameter | Type      | Description                  |
 |:----------|:----------|:-----------------------------|
 | `id`      | `Integer` | **Requiere**. Id del usuario |
+
+Ejemplo de respuesta
+
+```json
+{
+  "status": "gastos",
+  "egresos": {
+    "2024-09": 1000.00,
+    "2024-10": 2000.00
+  }
+}
+```
+
+## Egresos por mes por cuenta
+
+```http
+  GET /dashboard/egresos_por_mes/{id}/{id_cuenta}
+```
+
+| Parameter   | Type      | Description                   |
+|:------------|:----------|:------------------------------|
+| `id`        | `Integer` | **Requiere**. Id del usuario  |
+| `id_cuenta` | `Integer` | **Requiere**. Id de la cuenta |
 
 Ejemplo de respuesta
 
@@ -677,6 +732,50 @@ Ejemplo de respuesta
         }
     ]
 ```
+
+## Transacciones recientes por cuenta
+```http
+  GET /dashboard/transacciones_recientes/{id}/{id_cuenta}
+```
+
+| Parameter   | Type      | Description                   |
+|:------------|:----------|:------------------------------|
+| `id`        | `Integer` | **Requiere**. Id del usuario  |
+| `id_cuenta` | `Integer` | **Requiere**. Id de la cuenta |
+
+Ejemplo de respuesta
+
+```json
+[
+        {
+            "id": 2,
+            "usuario": "adminadmin",
+            "categoria": "Sueldo",
+            "tipo_transaccion": "Ingreso",
+            "tipo_concepto": "Sueldo Mensual",
+            "frecuencia": "Diario",
+            "divisa": "$",
+            "monto": "1000.00",
+            "descripcion": "Gasto",
+            "fecha": "2024-09-22",
+            "numeroCuenta": "123456789"
+        },
+        {
+            "id": 3,
+            "usuario": "adminadmin",
+            "categoria": "Sueldo",
+            "tipo_transaccion": "Ingreso",
+            "tipo_concepto": "Sueldo Mensual",
+            "frecuencia": "Diario",
+            "divisa": "$",
+            "monto": "100.00",
+            "descripcion": "Gasto",
+            "fecha": "2024-09-22",
+            "numeroCuenta": "123456789"
+        }
+    ]
+```
+
 ## Gastos por categoria
 
 ```http
@@ -695,6 +794,27 @@ Ejemplo de respuesta
     "Inversiones": 2000.00
 }
 ```
+
+## Gastos por categoria por cuenta
+
+```http
+  GET /dashboard/gastos_por_categoria/{id}/{id_cuenta}
+```
+
+| Parameter   | Type      | Description                   |
+|:------------|:----------|:------------------------------|
+| `id`        | `Integer` | **Requiere**. Id del usuario  |
+| `id_cuenta` | `Integer` | **Requiere**. Id de la cuenta |
+
+Ejemplo de respuesta
+
+```json
+{
+    "Gastos Personales": 1000.00,
+    "Inversiones": 2000.00
+}
+```
+
 # Reportes
 
 ## Generar Reporte
@@ -764,7 +884,8 @@ Datos de entrada
 ```json
 {
   "id_usuario": "1",
-  "message": "Hola, ¿cómo estás?"
+  "message": "Hola, ¿cómo estás?",
+  "id_cuenta": "1"
 }
 ```
 Ejemplo de respuesta

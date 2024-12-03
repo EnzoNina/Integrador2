@@ -33,14 +33,16 @@ public class TransaccionController {
     private final IFrecuenciaService frecuenciaService;
     private final IDivisaService divisaService;
     private final IPresupuestoService presupuestoService;
+    private final ICuentasBancariasService cuentaService;
 
     @PostMapping("/listar")
-    public ResponseEntity<?> listarTransacciones(@RequestBody UsuarioDto dto) {
+    public ResponseEntity<?> listarTransacciones(@RequestBody UsuarioDto dto, @RequestParam Integer id_cuenta) {
         response.clear();
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
-        List<Transacciones> transaccionesListUsuario = transaccionService.findByUsuario(usuario);
+        Cuenta cuenta = cuentaService.obtenerCuentaPorId(id_cuenta);
+        List<Transacciones> transaccionesListUsuario = transaccionService.findByUsuarioAndCuenta(usuario, cuenta);
 
-        //Creamos una lista de transacciones de respuesta
+        // Creamos una lista de transacciones de respuesta
         List<TransaccionResponseDto> transaccionesResponseList = new ArrayList<>();
         for (Transacciones transaccion : transaccionesListUsuario) {
             transaccionesResponseList.add(setTransaccionResponseDto(transaccion));
@@ -59,9 +61,8 @@ public class TransaccionController {
             response.put("status", HttpStatus.NOT_FOUND);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
-        //Creamos el objeto de respuesta
+        // Creamos el objeto de respuesta
         TransaccionResponseDto transaccionResponseDto = setTransaccionResponseDto(transaccion);
-
 
         response.put("transaccion", transaccionResponseDto);
         response.put("status", HttpStatus.OK);
@@ -80,32 +81,34 @@ public class TransaccionController {
                 .monto(transaccion.getMonto().toString())
                 .descripcion(transaccion.getDescripcion())
                 .fecha(transaccion.getFechaTransaccion().toString())
+                .numeroCuenta(transaccion.getCuenta().getNumCuenta())
                 .build();
     }
 
     @PostMapping("/guardar")
     public ResponseEntity<?> guardarTransaccion(@RequestBody TransaccionDto dto) {
         response.clear();
-        //Buscamos la categoria y el usuario
+        // Buscamos la categoria y el usuario
         UsuariosCategoria categoria = usuarioCategoriaService.findById(Integer.valueOf(dto.getId_tipo_categoria()));
         log.info("Categoria: " + categoria);
         Usuario usuario = usuarioService.findById(Integer.valueOf(dto.getId_usuario()));
         log.info("Usuario: " + usuario);
 
-        //Verificamos que la transacción sea de un egreso
+        // Verificamos que la transacción sea de un egreso
         if (categoria.getIdTipoTra().getId() == 2) {
-            //Buscamos si la categoria de la transacción tiene un presupuesto
+            // Buscamos si la categoria de la transacción tiene un presupuesto
             Presupuesto presupuestoEncontrado = presupuestoService.findByUsuarioCategoria(categoria);
             log.info("Presupuesto: " + presupuestoEncontrado);
             if (presupuestoEncontrado != null) {
-                //Sumar todas las transacciones de una categoria y comparar con el presupuesto
-                BigDecimal totalTransacciones = transaccionService.sumarTransaccionesPorCategoriaAndUsuario(categoria.getId(), usuario);
+                // Sumar todas las transacciones de una categoria y comparar con el presupuesto
+                BigDecimal totalTransacciones = transaccionService
+                        .sumarTransaccionesPorCategoriaAndUsuario(categoria.getId(), usuario);
 
                 if (totalTransacciones == null) {
                     totalTransacciones = BigDecimal.ZERO;
                 }
 
-                //Comprobamos si el total de las transacciones supera el presupuesto
+                // Comprobamos si el total de las transacciones supera el presupuesto
                 if (totalTransacciones.add(dto.getMonto()).compareTo(presupuestoEncontrado.getMonto()) > 0) {
                     response.put("mensaje", "El monto de la transacción supera el presupuesto");
                     response.put("status", HttpStatus.BAD_REQUEST);
@@ -114,10 +117,11 @@ public class TransaccionController {
             }
         }
 
-        //Buscamos todas las entidades que necesitamos para guardar la transaccion
+        // Buscamos todas las entidades que necesitamos para guardar la transaccion
         TipoConcepto tipoConcepto = tipoConceptoService.findById(Integer.valueOf(dto.getId_tipo_concepto()));
         Frecuencia frecuencia = frecuenciaService.findById(Integer.valueOf(dto.getId_tipo_frecuencia()));
         Divisa divisa = divisaService.findById(Integer.valueOf(dto.getId_tipo_divisa()));
+        Cuenta cuenta = cuentaService.obtenerCuentaPorId(Integer.valueOf(dto.getId_cuenta()));
 
         // Verificamos que las entidades no sean null
         verificarEntidadNoNula(usuario, "Usuario no existe");
@@ -125,8 +129,9 @@ public class TransaccionController {
         verificarEntidadNoNula(tipoConcepto, "Tipo de concepto no existe");
         verificarEntidadNoNula(frecuencia, "Frecuencia no existe");
         verificarEntidadNoNula(divisa, "Divisa no existe");
+        verificarEntidadNoNula(cuenta, "Cuenta no existe");
 
-        //Una vez que tenemos todas las entidades, creamos la transaccion
+        // Una vez que tenemos todas las entidades, creamos la transaccion
         Transacciones transaccion = Transacciones.builder()
                 .idUsuario(usuario)
                 .idCategoria(categoria)
@@ -135,9 +140,10 @@ public class TransaccionController {
                 .monto(dto.getMonto())
                 .divisa(divisa)
                 .descripcion(dto.getDescripcion())
+                .cuenta(cuenta)
                 .build();
 
-        //Guardamos la transaccion
+        // Guardamos la transaccion
         transaccionService.save(transaccion);
         response.put("mensaje", "Transacción guardada correctamente");
         response.put("status", HttpStatus.OK);

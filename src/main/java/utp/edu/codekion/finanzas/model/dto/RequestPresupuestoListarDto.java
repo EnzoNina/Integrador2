@@ -3,10 +3,9 @@ package utp.edu.codekion.finanzas.model.dto;
 import lombok.Data;
 
 @Data
-public class UserMessage {
-
+public class RequestPresupuestoListarDto {
+    
     private String id_usuario;
-    private String message;
     private String id_cuenta;
 
 }

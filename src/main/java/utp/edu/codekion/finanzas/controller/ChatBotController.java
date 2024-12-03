@@ -29,7 +29,7 @@ public class ChatBotController {
     @PostMapping("/enviarMensaje")
     public ResponseEntity<?> enviarMensaje(@RequestBody UserMessage userMessage) {
         Map<String, Object> response = new HashMap<>();
-        BigDecimal balanceTotal = transaccionService.balanceTotal(Integer.valueOf(userMessage.getId_usuario()));
+        BigDecimal balanceTotal = transaccionService.balanceTotal(Integer.valueOf(userMessage.getId_usuario()),Integer.valueOf(userMessage.getId_cuenta()));
         List<IngresoMesDto> lstIngresos = transaccionService.ingresosPorMes(Integer.valueOf(userMessage.getId_usuario()));
         List<IngresoMesDto> lstEgreso = transaccionService.gastosPorMes(Integer.valueOf(userMessage.getId_usuario()));
         List<Transacciones> transacciones = transaccionService.transaccionesRecientes(Integer.valueOf(userMessage.getId_usuario()));

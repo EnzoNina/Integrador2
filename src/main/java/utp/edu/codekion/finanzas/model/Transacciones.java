@@ -62,6 +62,11 @@ public class Transacciones {
     @JoinColumn(name = "divisa", nullable = false)
     private Divisa divisa;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "id_cuenta", nullable = false)
+    private Cuenta cuenta;
+
     @Size(max = 250)
     @Column(name = "descripcion", length = 250)
     private String descripcion;

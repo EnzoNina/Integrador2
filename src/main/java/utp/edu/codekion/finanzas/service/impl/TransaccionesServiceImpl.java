@@ -2,6 +2,8 @@ package utp.edu.codekion.finanzas.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import utp.edu.codekion.finanzas.model.Cuenta;
 import utp.edu.codekion.finanzas.model.Transacciones;
 import utp.edu.codekion.finanzas.model.Usuario;
 import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
@@ -54,8 +56,8 @@ public class TransaccionesServiceImpl implements ITransaccionService {
     }
 
     @Override
-    public BigDecimal balanceTotal(Integer id_usuario) {
-        return transaccionRepository.balanceTotal(id_usuario);
+    public BigDecimal balanceTotal(Integer id_usuario,Integer id_cuenta) {
+        return transaccionRepository.balanceTotal(id_usuario, id_cuenta);
     }
 
     @Override
@@ -93,5 +95,29 @@ public class TransaccionesServiceImpl implements ITransaccionService {
         return transaccionRepository.totalEgresosEntreFechas(fechaInicio, fechaFin, id_usuario);
     }
 
+    @Override
+    public List<Transacciones> findByUsuarioAndCuenta(Usuario usuario, Cuenta cuenta) {
+        return transaccionRepository.findByUsuarioAndCuenta(usuario, cuenta);
+    }
+
+    @Override
+    public List<IngresoMesDto> ingresosPorMesAndCuenta(Integer id_usuario, Integer id_cuenta) {
+        return transaccionRepository.ingresosPorMesAndCuenta(id_usuario, id_cuenta);
+    }
+
+    @Override
+    public List<IngresoMesDto> gastosPorMesAndCuenta(Integer id_usuario, Integer id_cuenta) {
+        return transaccionRepository.gastosPorMesAndCuenta(id_usuario, id_cuenta);
+    }
+
+    @Override
+    public List<Transacciones> transaccionesRecientesAndCuenta(Integer id_usuario, Integer id_cuenta) {
+        return transaccionRepository.transaccionesRecientesAndCuenta(id_usuario, id_cuenta);
+    }
+
+    @Override
+    public List<CategoriaGastoDto> gastosPorCategoriaAndCuenta(Integer id_usuario, Integer id_cuenta) {
+        return transaccionRepository.gastosPorCategoriaAndCuenta(id_usuario, id_cuenta);
+    }
 
 }

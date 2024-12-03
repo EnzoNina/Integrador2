@@ -1,5 +1,11 @@
 package utp.edu.codekion.finanzas.utils;
 
+import com.google.cloud.vertexai.VertexAI;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
+import com.google.cloud.vertexai.generativeai.ChatSession;
+import com.google.cloud.vertexai.generativeai.ContentMaker;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -9,14 +15,14 @@ import utp.edu.codekion.finanzas.model.Transacciones;
 import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
 import utp.edu.codekion.finanzas.model.dto.IngresoMesDto;
 
-import java.io.OutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
-import java.util.Scanner;
 
 @Data
 @Component
@@ -26,135 +32,91 @@ public class Gemini {
     List<IngresoMesDto> lstIngresos = new ArrayList<>();
     List<IngresoMesDto> lstEgreso = new ArrayList<>();
     List<Transacciones> transacciones = new ArrayList<>();
-    //Creamos una lista de transacciones de respuesta
     List<CategoriaGastoDto> categoriaGastoDtos = new ArrayList<>();
 
     private static final String API_KEY = "AIzaSyBOiRtJ7umQmkJGL3LoNIpube7v6yXkKR4";
-    private static final String URL_STRING = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" + API_KEY;
-
-    // List to keep track of the conversation history
     private static final List<Message> conversationHistory = new ArrayList<>();
 
-    public String obtenerRespuesta(String userMessage) {
-        // Agregar el mensaje del usuario al historial de la conversación
-        conversationHistory.add(new Message("user", userMessage));
+    private static final String PROJECT_ID = "your-google-cloud-project-id";
+    private static final String LOCATION = "us-central1";
+    private static final String MODEL_NAME = "gemini-1.5-flash-001";
 
-        // Obtener la respuesta del bot
-        String botResponse = getBotResponse();
+    private ChatSession chatSession;
 
-        if (botResponse != null) {
-            // Agregar la respuesta del bot al historial
-            conversationHistory.add(new Message("model", botResponse));
-            return botResponse;
-        } else {
-            return "Error en la respuesta del bot.";
+    public Gemini() throws IOException {
+
+        // Recuperar las credenciales codificadas desde la variable de entorno
+        String base64Credenciales = System.getenv("GOOGLE_CREDENTIALS_BASE64");
+
+        if (base64Credenciales == null || base64Credenciales.isEmpty()) {
+            throw new IllegalStateException("Las credenciales de Google no están configuradas.");
         }
+
+        // Decodificar las credenciales
+        byte[] credencialesDecodificadas = Base64.getDecoder().decode(base64Credenciales);
+
+        // Guardar las credenciales en un archivo temporal
+        Path credencialesPath = Paths.get("credenciales.json");
+        Files.write(credencialesPath, credencialesDecodificadas);
+
+        // Establecer la variable de entorno GOOGLE_APPLICATION_CREDENTIALS para Vertex
+        // AI
+        System.setProperty("GOOGLE_APPLICATION_CREDENTIALS", credencialesPath.toAbsolutePath().toString());
+
+        VertexAI vertexAI = new VertexAI(PROJECT_ID, LOCATION);
+        GenerativeModel model = new GenerativeModel(MODEL_NAME, vertexAI)
+                .withSystemInstruction(ContentMaker.fromString(generateJsonBody(conversationHistory)));
+        this.chatSession = new ChatSession(model);
     }
 
-    private String getBotResponse() {
+    public String obtenerRespuesta(String userMessage) {
+        conversationHistory.add(new Message("user", userMessage));
         try {
-            URL url = new URL(URL_STRING);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
-
-            // Create JSON body from conversation history
-            String jsonInputString = generateJsonBody(conversationHistory);
-            System.out.println(jsonInputString);
-
-            try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
-            }
-
-            // Check for response
-            int responseCode = conn.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                try (Scanner responseScanner = new Scanner(conn.getInputStream(), StandardCharsets.UTF_8.name())) {
-                    String response = responseScanner.useDelimiter("\\A").next();
-                    System.out.println(response);
-                    return parseResponse(response);
-                }
-            } else {
-                System.out.println("Error en la solicitud HTTP: Código " + responseCode);
-            }
-
-            conn.disconnect();
+            return getBotResponse(userMessage);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error al obtener la respuesta del bot: " + e.getMessage());
         }
-        return null;
+        return "Error al obtener la respuesta del bot.";
+    }
+
+    private String getBotResponse(String userMessage) throws Exception {
+        GenerateContentResponse response = chatSession.sendMessage(userMessage);
+        return ResponseHandler.getText(response);
+    }
+
+    public static void main(String[] args) throws IOException {
+        Gemini gemini = new Gemini();
+        System.out.println(gemini.obtenerRespuesta("Hola, ¿cómo puedo gestionar mis finanzas personales?"));
     }
 
     private String generateJsonBody(List<Message> history) {
 
-        StringBuilder  systemInstructionMessage = new StringBuilder();
-        systemInstructionMessage.append("Eres CodekionBot, un asistente virtual diseñado para ayudar a los usuarios con consultas relacionadas con sus transacciones financieras. Puedes proporcionar información actualizada sobre las últimas transacciones, categorías con mayores gastos, presupuestos, y responder a cualquier otra consulta general relacionada con la gestión financiera. Además, podrás ofrecer recomendaciones y sugerencias basadas en los datos disponibles, ya sea según tu análisis personal o según información relevante que encuentres en Internet. Tu objetivo es proporcionar respuestas claras, útiles y completas, adaptándote al tono y contexto de cada usuario.");
+        StringBuilder systemInstructionMessage = new StringBuilder();
+        systemInstructionMessage.append(
+                "Eres CodekionBot, un asistente virtual diseñado para ayudar a los usuarios con consultas relacionadas con sus transacciones financieras. Puedes proporcionar información actualizada sobre las últimas transacciones, categorías con mayores gastos, presupuestos, y responder a cualquier otra consulta general relacionada con la gestión financiera. Además, podrás ofrecer recomendaciones y sugerencias basadas en los datos disponibles, ya sea según tu análisis personal o según información relevante que encuentres en Internet. Tu objetivo es proporcionar respuestas claras, útiles y completas, adaptándote al tono y contexto de cada usuario.");
         systemInstructionMessage.append("Tu balance total es: ").append(balanceTotal).append(". ");
         systemInstructionMessage.append("Ingresos mensuales:\n");
         for (IngresoMesDto ingreso : lstIngresos) {
-            systemInstructionMessage.append(" - Mes ").append(ingreso.getMes()).append(": ").append(ingreso.getTotal()).append("\n");
+            systemInstructionMessage.append(" - Mes ").append(ingreso.getMes()).append(": ").append(ingreso.getTotal())
+                    .append("\n");
         }
         systemInstructionMessage.append("Gastos mensuales:\n");
         for (IngresoMesDto egreso : lstEgreso) {
-            systemInstructionMessage.append(" - Mes ").append(egreso.getMes()).append(": ").append(egreso.getTotal()).append("\n");
+            systemInstructionMessage.append(" - Mes ").append(egreso.getMes()).append(": ").append(egreso.getTotal())
+                    .append("\n");
         }
         systemInstructionMessage.append("Transacciones recientes:\n");
         for (Transacciones transaccion : transacciones) {
-            systemInstructionMessage.append(" - ").append(transaccion.getDescripcion()).append(": ").append(transaccion.getMonto()).append("\n");
+            systemInstructionMessage.append(" - ").append(transaccion.getDescripcion()).append(": ")
+                    .append(transaccion.getMonto()).append("\n");
         }
         systemInstructionMessage.append("Gastos por categoría:\n");
         for (CategoriaGastoDto categoria : categoriaGastoDtos) {
-            systemInstructionMessage.append(" - ").append(categoria.getDescripcion()).append(": ").append(categoria.getMonto()).append("\n");
-        }
-        
-        StringBuilder jsonBuilder = new StringBuilder();
-        jsonBuilder.append("{\n");
-        jsonBuilder.append("  \"contents\": [\n");
-
-        for (Message message : history) {
-            jsonBuilder.append("    {\n");
-            jsonBuilder.append("      \"role\": \"").append(message.role).append("\",\n");
-            jsonBuilder.append("      \"parts\": [{ \"text\": \"").append(message.text).append("\" }]\n");
-            jsonBuilder.append("    },\n");
+            systemInstructionMessage.append(" - ").append(categoria.getDescripcion()).append(": ")
+                    .append(categoria.getMonto()).append("\n");
         }
 
-        jsonBuilder.append("  ],\n");
-
-        jsonBuilder.append("  \"systemInstruction\": { \"role\": \"user\", \"parts\": [{ \"text\": \"").append(systemInstructionMessage).append("\" }] },\n");
-        jsonBuilder.append("  \"generationConfig\": {\n");
-        jsonBuilder.append("    \"temperature\": 1,\n");
-        jsonBuilder.append("    \"topK\": 40,\n");
-        jsonBuilder.append("    \"topP\": 0.95,\n");
-        jsonBuilder.append("    \"maxOutputTokens\": 1000,\n");
-        jsonBuilder.append("    \"responseMimeType\": \"text/plain\"\n");
-        jsonBuilder.append("  }\n");
-        jsonBuilder.append("}");
-
-        return jsonBuilder.toString();
-    }
-
-    private static String parseResponse(String jsonResponse) {
-        try {
-            // Parsear el JSON completo de la respuesta
-            JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
-
-            // Acceder al array de candidatos
-            JsonArray candidatesArray = jsonObject.getAsJsonArray("candidates");
-            if (candidatesArray != null && candidatesArray.size() > 0) {
-                JsonObject contentObject = candidatesArray.get(0).getAsJsonObject().getAsJsonObject("content");
-
-                // Acceder al texto en "parts[0].text"
-                JsonArray partsArray = contentObject.getAsJsonArray("parts");
-                if (partsArray != null && partsArray.size() > 0) {
-                    return partsArray.get(0).getAsJsonObject().get("text").getAsString();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "Error al parsear la respuesta.";
+        return systemInstructionMessage.toString();
     }
 
     // Inner class to represent messages

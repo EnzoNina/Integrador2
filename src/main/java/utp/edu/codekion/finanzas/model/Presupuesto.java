@@ -33,6 +33,11 @@ public class Presupuesto {
     @JoinColumn(name = "id_categoria", nullable = false)
     private UsuariosCategoria idCategoria;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_cuenta", nullable = false)
+    private Cuenta cuenta;
+
     @Size(max = 250)
     @Column(name = "descripcion", length = 250)
     private String descripcion;

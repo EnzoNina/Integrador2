@@ -12,5 +12,6 @@ public class PresupuestoDto {
     private String nombre;
     private String descripcion;
     private BigDecimal monto;
+    private Integer id_cuenta;
 
 }

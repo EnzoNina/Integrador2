@@ -13,5 +13,6 @@ public class PresupuestoResponseDto {
     private String nombre;
     private String descripcion;
     private String monto;
+    private String numeroCuenta;
 
 }

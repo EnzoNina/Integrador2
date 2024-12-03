@@ -2,6 +2,8 @@ package utp.edu.codekion.finanzas.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import utp.edu.codekion.finanzas.model.Cuenta;
 import utp.edu.codekion.finanzas.model.Transacciones;
 import utp.edu.codekion.finanzas.model.Usuario;
 import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
@@ -16,11 +18,14 @@ public interface TransaccionRepository extends JpaRepository<Transacciones, Inte
     @Query("SELECT t FROM Transacciones t WHERE t.idUsuario = ?1")
     List<Transacciones> findByUsuario(Usuario usuario);
 
+    @Query("SELECT t FROM Transacciones t WHERE t.idUsuario = ?1 AND t.cuenta = ?2")
+    List<Transacciones> findByUsuarioAndCuenta(Usuario usuario, Cuenta cuenta);
+
     @Query("SELECT SUM(t.monto) FROM Transacciones t WHERE t.idCategoria.id = ?1 AND t.idUsuario = ?2")
     BigDecimal sumarTransaccionesPorCategoriaAndUsuario(Integer idCategoria, Usuario usuario);
 
-    @Query("SELECT SUM(CASE WHEN t.idCategoria.idTipoTra.id = 1 THEN t.monto ELSE 0 END) - SUM(CASE WHEN t.idCategoria.idTipoTra.id = 2 THEN t.monto ELSE 0 END) FROM Transacciones t WHERE t.idUsuario.id = ?1")
-    BigDecimal balanceTotal(Integer idUsuario);
+    @Query("SELECT SUM(CASE WHEN t.idCategoria.idTipoTra.id = 1 THEN t.monto ELSE 0 END) - SUM(CASE WHEN t.idCategoria.idTipoTra.id = 2 THEN t.monto ELSE 0 END) FROM Transacciones t WHERE t.idUsuario.id = ?1 AND t.cuenta.id = ?2")
+    BigDecimal balanceTotal(Integer idUsuario, Integer id_cuenta);
 
     @Query("SELECT new utp.edu.codekion.finanzas.model.dto.IngresoMesDto(TO_CHAR(t.fechaTransaccion, 'YYYY-MM'), SUM(t.monto)) " +
             "FROM Transacciones t " +
@@ -35,6 +40,17 @@ public interface TransaccionRepository extends JpaRepository<Transacciones, Inte
     @Query("SELECT new utp.edu.codekion.finanzas.model.dto.IngresoMesDto(TO_CHAR(t.fechaTransaccion, 'YYYY-MM'), SUM(t.monto)) " +
             "FROM Transacciones t " +
             "JOIN t.idUsuario u " +
+            "JOIN t.cuenta c " +
+            "JOIN t.idCategoria uc " +
+            "JOIN uc.idTipoTra tc " +
+            "WHERE u.id = ?1 AND c.id = ?2 AND tc.descripcion = 'Ingreso' " +
+            "GROUP BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM') " +
+            "ORDER BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM')")
+    List<IngresoMesDto> ingresosPorMesAndCuenta(Integer idUsuario, Integer idCuenta);
+
+    @Query("SELECT new utp.edu.codekion.finanzas.model.dto.IngresoMesDto(TO_CHAR(t.fechaTransaccion, 'YYYY-MM'), SUM(t.monto)) " +
+            "FROM Transacciones t " +
+            "JOIN t.idUsuario u " +
             "JOIN t.idCategoria uc " +
             "JOIN uc.idTipoTra tc " +
             "WHERE u.id = ?1 AND tc.descripcion = 'Egreso' " +
@@ -42,8 +58,22 @@ public interface TransaccionRepository extends JpaRepository<Transacciones, Inte
             "ORDER BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM')")
     List<IngresoMesDto> gastosPorMes(Integer idUsuario);
 
+    @Query("SELECT new utp.edu.codekion.finanzas.model.dto.IngresoMesDto(TO_CHAR(t.fechaTransaccion, 'YYYY-MM'), SUM(t.monto)) " +
+            "FROM Transacciones t " +
+            "JOIN t.idUsuario u " +
+            "JOIN t.cuenta c " +
+            "JOIN t.idCategoria uc " +
+            "JOIN uc.idTipoTra tc " +
+            "WHERE u.id = ?1 AND c.id = ?2 AND tc.descripcion = 'Egreso' " +
+            "GROUP BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM') " +
+            "ORDER BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM')")
+    List<IngresoMesDto> gastosPorMesAndCuenta(Integer idUsuario, Integer idCuenta);
+
     @Query("SELECT t FROM Transacciones t WHERE t.idUsuario.id = ?1 ORDER BY t.fechaTransaccion DESC LIMIT 10")
     List<Transacciones> transaccionesRecientes(Integer idUsuario);
+
+    @Query("SELECT t FROM Transacciones t WHERE t.idUsuario.id = ?1 AND t.cuenta.id = ?2 ORDER BY t.fechaTransaccion DESC LIMIT 10")
+    List<Transacciones> transaccionesRecientesAndCuenta(Integer idUsuario, Integer idCuenta);
 
     @Query("SELECT new utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto(uc.descripcion, SUM(t.monto)) " +
             "FROM Transacciones t " +
@@ -53,6 +83,16 @@ public interface TransaccionRepository extends JpaRepository<Transacciones, Inte
             "WHERE u.id = ?1 AND tc.descripcion = 'Egreso' " +
             "GROUP BY uc.descripcion")
     List<CategoriaGastoDto> gastosPorCategoria(Integer idUsuario);
+
+    @Query("SELECT new utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto(uc.descripcion, SUM(t.monto)) " +
+            "FROM Transacciones t " +
+            "JOIN t.idUsuario u " +
+            "JOIN t.cuenta c " +
+            "JOIN t.idCategoria uc " +
+            "JOIN uc.idTipoTra tc " +
+            "WHERE u.id = ?1 AND c.id = ?2 AND tc.descripcion = 'Egreso' " +
+            "GROUP BY uc.descripcion")
+    List<CategoriaGastoDto> gastosPorCategoriaAndCuenta(Integer idUsuario, Integer idCuenta);
 
     @Query("SELECT t FROM Transacciones t WHERE t.fechaTransaccion BETWEEN ?1 AND ?2")
     List<Transacciones> findByFechaTransaccionBetween(LocalDate fechaInicio, LocalDate fechaFin);

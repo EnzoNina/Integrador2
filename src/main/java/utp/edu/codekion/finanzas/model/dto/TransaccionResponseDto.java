@@ -19,6 +19,6 @@ public class TransaccionResponseDto {
     private String monto;
     private String descripcion;
     private String fecha;
-
+    private String numeroCuenta;
 
 }

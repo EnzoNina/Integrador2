@@ -7,7 +7,6 @@ import utp.edu.codekion.finanzas.model.Categoria;
 import utp.edu.codekion.finanzas.model.TipoTransaccion;
 import utp.edu.codekion.finanzas.model.Usuario;
 import utp.edu.codekion.finanzas.model.UsuariosCategoria;
-import utp.edu.codekion.finanzas.model.dto.CategoriaRequestDto;
 import utp.edu.codekion.finanzas.model.dto.UsuariosCategoriasRequestDto;
 import utp.edu.codekion.finanzas.model.dto.UsuariosCategoriasResponseDto;
 import utp.edu.codekion.finanzas.service.IService.ICategoriaService;
