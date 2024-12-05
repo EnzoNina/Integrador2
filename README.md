@@ -872,6 +872,77 @@ const generarReporte = async (fechaInicio, fechaFin, idUsuario) => {
 };
 ```
 
+# Banco
+
+## Obtener lista
+
+```http
+  GET /banco/get
+```
+
+RESPUESTA
+
+```json
+[
+  {
+    "id": 1,
+    "nombre": "Banco de Crédito del Perú",
+    "swift": "BCPPEPE",
+    "telefono": "+51 1 313 8000",
+    "sitioWeb": "https://www.viabcp.com"
+  },
+  {
+    "id": 2,
+    "nombre": "BBVA Perú",
+    "swift": "BBVPPEPL",
+    "telefono": "+51 1 213 9000",
+    "sitioWeb": "https://www.bbva.pe"
+  },
+  {
+    "id": 3,
+    "nombre": "Scotiabank Perú",
+    "swift": "SCOTPEPL",
+    "telefono": "+51 1 211 6000",
+    "sitioWeb": "https://www.scotiabank.com.pe"
+  },
+  {
+    "id": 4,
+    "nombre": "Interbank",
+    "swift": "INTERPEPL",
+    "telefono": "+51 1 211 9000",
+    "sitioWeb": "https://www.interbank.pe"
+  },
+  {
+    "id": 5,
+    "nombre": "Banco Continental",
+    "swift": "CONTPEPL",
+    "telefono": "+51 1 417 9000",
+    "sitioWeb": "https://www.bcp.com.pe"
+  },
+  {
+    "id": 6,
+    "nombre": "Banco Pichincha",
+    "swift": "BPCPPEPL",
+    "telefono": "+51 1 419 8000",
+    "sitioWeb": "https://www.pichincha.pe"
+  },
+  {
+    "id": 7,
+    "nombre": "Banco de la Nación",
+    "swift": "BNPEPEPL",
+    "telefono": "+51 1 315 2000",
+    "sitioWeb": "https://www.bn.com.pe"
+  },
+  {
+    "id": 8,
+    "nombre": "MiBanco",
+    "swift": "MIBAPEPL",
+    "telefono": "+51 1 211 0000",
+    "sitioWeb": "https://www.mibanco.com.pe"
+  }
+]
+```
+
 # ChatBot
 ## Enviar Mensaje
 
