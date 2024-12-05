@@ -33,8 +33,6 @@ public class Gemini {
     List<IngresoMesDto> lstEgreso = new ArrayList<>();
     List<Transacciones> transacciones = new ArrayList<>();
     List<CategoriaGastoDto> categoriaGastoDtos = new ArrayList<>();
-
-    private static final String API_KEY = "AIzaSyBOiRtJ7umQmkJGL3LoNIpube7v6yXkKR4";
     private static final List<Message> conversationHistory = new ArrayList<>();
 
     private static final String PROJECT_ID = "your-google-cloud-project-id";
