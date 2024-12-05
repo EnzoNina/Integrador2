@@ -39,13 +39,10 @@ public interface TransaccionRepository extends JpaRepository<Transacciones, Inte
 
     @Query("SELECT new utp.edu.codekion.finanzas.model.dto.IngresoMesDto(TO_CHAR(t.fechaTransaccion, 'YYYY-MM'), SUM(t.monto)) " +
             "FROM Transacciones t " +
-            "JOIN t.idUsuario u " +
-            "JOIN t.cuenta c " +
             "JOIN t.idCategoria uc " +
             "JOIN uc.idTipoTra tc " +
-            "WHERE u.id = ?1 AND c.id = ?2 AND tc.descripcion = 'Ingreso' " +
-            "GROUP BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM') " +
-            "ORDER BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM')")
+            "WHERE t.idUsuario.id = ?1 AND t.cuenta.id = ?2 AND tc.descripcion = 'Ingreso' " +
+            "GROUP BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM')")
     List<IngresoMesDto> ingresosPorMesAndCuenta(Integer idUsuario, Integer idCuenta);
 
     @Query("SELECT new utp.edu.codekion.finanzas.model.dto.IngresoMesDto(TO_CHAR(t.fechaTransaccion, 'YYYY-MM'), SUM(t.monto)) " +
@@ -60,13 +57,10 @@ public interface TransaccionRepository extends JpaRepository<Transacciones, Inte
 
     @Query("SELECT new utp.edu.codekion.finanzas.model.dto.IngresoMesDto(TO_CHAR(t.fechaTransaccion, 'YYYY-MM'), SUM(t.monto)) " +
             "FROM Transacciones t " +
-            "JOIN t.idUsuario u " +
-            "JOIN t.cuenta c " +
             "JOIN t.idCategoria uc " +
             "JOIN uc.idTipoTra tc " +
-            "WHERE u.id = ?1 AND c.id = ?2 AND tc.descripcion = 'Egreso' " +
-            "GROUP BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM') " +
-            "ORDER BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM')")
+            "WHERE t.idUsuario.id = ?1 AND t.cuenta.id = ?2 AND tc.descripcion = 'Egreso' " +
+            "GROUP BY TO_CHAR(t.fechaTransaccion, 'YYYY-MM')")
     List<IngresoMesDto> gastosPorMesAndCuenta(Integer idUsuario, Integer idCuenta);
 
     @Query("SELECT t FROM Transacciones t WHERE t.idUsuario.id = ?1 ORDER BY t.fechaTransaccion DESC LIMIT 10")

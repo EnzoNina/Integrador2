@@ -8,5 +8,4 @@ public class UserMessage {
     private String id_usuario;
     private String message;
     private String id_cuenta;
-
 }

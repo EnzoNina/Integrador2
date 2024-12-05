@@ -1,6 +1,7 @@
 package utp.edu.codekion.finanzas.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/chatbot")
 @RequiredArgsConstructor
+@Log
 public class ChatBotController {
 
     private final Gemini gemini;
@@ -29,22 +31,46 @@ public class ChatBotController {
     @PostMapping("/enviarMensaje")
     public ResponseEntity<?> enviarMensaje(@RequestBody UserMessage userMessage) {
         Map<String, Object> response = new HashMap<>();
-        BigDecimal balanceTotal = transaccionService.balanceTotal(Integer.valueOf(userMessage.getId_usuario()),Integer.valueOf(userMessage.getId_cuenta()));
-        List<IngresoMesDto> lstIngresos = transaccionService.ingresosPorMes(Integer.valueOf(userMessage.getId_usuario()));
-        List<IngresoMesDto> lstEgreso = transaccionService.gastosPorMes(Integer.valueOf(userMessage.getId_usuario()));
-        List<Transacciones> transacciones = transaccionService.transaccionesRecientes(Integer.valueOf(userMessage.getId_usuario()));
+        try {
+            // Obtener datos dinámicos
+            BigDecimal balanceTotal = transaccionService.balanceTotal(
+                    Integer.valueOf(userMessage.getId_usuario()),
+                    Integer.valueOf(userMessage.getId_cuenta())
+            );
+            List<IngresoMesDto> lstIngresos = transaccionService.ingresosPorMesAndCuenta(
+                    Integer.valueOf(userMessage.getId_usuario()),
+                    Integer.valueOf(userMessage.getId_cuenta())
+            );
+            List<IngresoMesDto> lstEgreso = transaccionService.gastosPorMesAndCuenta(
+                    Integer.valueOf(userMessage.getId_usuario()),
+                    Integer.valueOf(userMessage.getId_cuenta())
+            );
+            List<Transacciones> transacciones = transaccionService.transaccionesRecientesAndCuenta(
+                    Integer.valueOf(userMessage.getId_usuario()),
+                    Integer.valueOf(userMessage.getId_cuenta())
+            );
+            List<CategoriaGastoDto> categoriaGastoDtos = transaccionService.gastosPorCategoria(
+                    Integer.valueOf(userMessage.getId_usuario())
+            );
 
-        List<CategoriaGastoDto> categoriaGastoDtos = transaccionService.gastosPorCategoria(Integer.valueOf(userMessage.getId_usuario()));
-        //Establecemos los valores de las variables de la clase Gemini
-        gemini.setBalanceTotal(balanceTotal);
-        gemini.setLstIngresos(lstIngresos);
-        gemini.setLstEgreso(lstEgreso);
-        gemini.setTransacciones(transacciones);
-        gemini.setCategoriaGastoDtos(categoriaGastoDtos);
+            // Establecer valores en Gemini
+            gemini.setBalanceTotal(balanceTotal);
+            gemini.setLstIngresos(lstIngresos);
+            gemini.setLstEgreso(lstEgreso);
+            gemini.setTransacciones(transacciones);
+            gemini.setCategoriaGastoDtos(categoriaGastoDtos);
 
-        String respuesta = gemini.obtenerRespuesta(userMessage.getMessage());
-        response.put("respuesta", respuesta);
-        return ResponseEntity.ok(response);
+            // Inicializar la sesión con datos dinámicos
+            gemini.initializeSession();
+
+            // Obtener respuesta del bot
+            String respuesta = gemini.obtenerRespuesta(userMessage.getMessage());
+            response.put("respuesta", respuesta);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("error", "Error al procesar la solicitud: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
-
 }

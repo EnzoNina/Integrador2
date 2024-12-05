@@ -1,25 +1,22 @@
 package utp.edu.codekion.finanzas.utils;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
+import com.google.cloud.vertexai.api.GenerationConfig;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 import utp.edu.codekion.finanzas.model.Transacciones;
 import utp.edu.codekion.finanzas.model.dto.CategoriaGastoDto;
 import utp.edu.codekion.finanzas.model.dto.IngresoMesDto;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -28,24 +25,22 @@ import java.util.List;
 @Component
 public class Gemini {
 
-    BigDecimal balanceTotal = new BigDecimal(0);
+    BigDecimal balanceTotal = BigDecimal.ZERO;
     List<IngresoMesDto> lstIngresos = new ArrayList<>();
     List<IngresoMesDto> lstEgreso = new ArrayList<>();
     List<Transacciones> transacciones = new ArrayList<>();
     List<CategoriaGastoDto> categoriaGastoDtos = new ArrayList<>();
     private static final List<Message> conversationHistory = new ArrayList<>();
 
-    private static final String PROJECT_ID = "your-google-cloud-project-id";
+    private static final String PROJECT_ID = "proyect-clever-84ccc";
     private static final String LOCATION = "us-central1";
     private static final String MODEL_NAME = "gemini-1.5-flash-001";
 
     private ChatSession chatSession;
 
-    public Gemini() throws IOException {
-
-        // Recuperar las credenciales codificadas desde la variable de entorno
+    public void initializeSession() throws IOException {
+        // Recuperar las credenciales base64 desde la variable de entorno
         String base64Credenciales = System.getenv("GOOGLE_CREDENTIALS_BASE64");
-
         if (base64Credenciales == null || base64Credenciales.isEmpty()) {
             throw new IllegalStateException("Las credenciales de Google no están configuradas.");
         }
@@ -53,17 +48,38 @@ public class Gemini {
         // Decodificar las credenciales
         byte[] credencialesDecodificadas = Base64.getDecoder().decode(base64Credenciales);
 
-        // Guardar las credenciales en un archivo temporal
-        Path credencialesPath = Paths.get("credenciales.json");
-        Files.write(credencialesPath, credencialesDecodificadas);
+        // Cargar las credenciales en GoogleCredentials desde un stream
+        GoogleCredentials credentials;
+        try (ByteArrayInputStream credencialesStream = new ByteArrayInputStream(credencialesDecodificadas)) {
+            credentials = GoogleCredentials.fromStream(credencialesStream)
+                    .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
+        }
 
-        // Establecer la variable de entorno GOOGLE_APPLICATION_CREDENTIALS para Vertex
-        // AI
-        System.setProperty("GOOGLE_APPLICATION_CREDENTIALS", credencialesPath.toAbsolutePath().toString());
+        // Configurar Vertex AI
+        VertexAI vertexAI = new VertexAI.Builder()
+                .setCredentials(credentials)
+                .setProjectId(PROJECT_ID)
+                .setLocation(LOCATION)
+                .build();
 
-        VertexAI vertexAI = new VertexAI(PROJECT_ID, LOCATION);
-        GenerativeModel model = new GenerativeModel(MODEL_NAME, vertexAI)
-                .withSystemInstruction(ContentMaker.fromString(generateJsonBody(conversationHistory)));
+        GenerationConfig generationConfig =
+                GenerationConfig.newBuilder()
+                        .setMaxOutputTokens(1024)
+                        .setTemperature(0.2F)
+                        .setTopP(0.8F)
+                        .build();
+
+        // Generar las instrucciones dinámicas
+        var systemInstruction = ContentMaker.fromMultiModalData(generateJsonBody());
+        System.out.println("Instrucciones del sistema: " + systemInstruction);
+        // Configurar el modelo y la sesión
+        GenerativeModel model = new GenerativeModel.Builder()
+                .setModelName(MODEL_NAME)
+                .setVertexAi(vertexAI)
+                .setGenerationConfig(generationConfig)
+                .setSystemInstruction(systemInstruction)
+                .build();
+
         this.chatSession = new ChatSession(model);
     }
 
@@ -82,16 +98,10 @@ public class Gemini {
         return ResponseHandler.getText(response);
     }
 
-    public static void main(String[] args) throws IOException {
-        Gemini gemini = new Gemini();
-        System.out.println(gemini.obtenerRespuesta("Hola, ¿cómo puedo gestionar mis finanzas personales?"));
-    }
-
-    private String generateJsonBody(List<Message> history) {
-
+    private String generateJsonBody() {
         StringBuilder systemInstructionMessage = new StringBuilder();
         systemInstructionMessage.append(
-                "Eres CodekionBot, un asistente virtual diseñado para ayudar a los usuarios con consultas relacionadas con sus transacciones financieras. Puedes proporcionar información actualizada sobre las últimas transacciones, categorías con mayores gastos, presupuestos, y responder a cualquier otra consulta general relacionada con la gestión financiera. Además, podrás ofrecer recomendaciones y sugerencias basadas en los datos disponibles, ya sea según tu análisis personal o según información relevante que encuentres en Internet. Tu objetivo es proporcionar respuestas claras, útiles y completas, adaptándote al tono y contexto de cada usuario.");
+                "Eres CodekionBot, un asistente virtual diseñado para ayudar a los usuarios con consultas relacionadas con sus transacciones financieras. ");
         systemInstructionMessage.append("Tu balance total es: ").append(balanceTotal).append(". ");
         systemInstructionMessage.append("Ingresos mensuales:\n");
         for (IngresoMesDto ingreso : lstIngresos) {
@@ -113,7 +123,6 @@ public class Gemini {
             systemInstructionMessage.append(" - ").append(categoria.getDescripcion()).append(": ")
                     .append(categoria.getMonto()).append("\n");
         }
-
         return systemInstructionMessage.toString();
     }
 
@@ -127,5 +136,4 @@ public class Gemini {
             this.text = text;
         }
     }
-
 }
