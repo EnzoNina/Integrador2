@@ -14,50 +14,71 @@ import java.util.List;
 
 public class ReportePdfGenerate {
 
+    private static final float MARGIN = 50;
+    private static final float LINE_HEIGHT = 14.5f;
+    private static final float START_Y = 750;
+    private static final float PAGE_HEIGHT = 792; // Altura estándar de una página A4 en puntos.
+
     public static byte[] generarReporte(ResumenTransacciones resumen, List<Transacciones> lstTransacciones) {
         try (PDDocument document = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-            // Crear una nueva página
+            // Crear una nueva página y un flujo de contenido
             PDPage page = new PDPage();
             document.addPage(page);
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
-            // Crear flujo de contenido para la página
-            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
-                contentStream.beginText();
-                contentStream.setFont(PDType1Font.HELVETICA, 12);
-                contentStream.setLeading(14.5f);
-                contentStream.newLineAtOffset(50, 750);
+            // Configuración inicial del flujo de contenido
+            contentStream.setFont(PDType1Font.HELVETICA, 12);
+            contentStream.setLeading(LINE_HEIGHT);
+            float yPosition = START_Y;
+            contentStream.beginText();
+            contentStream.newLineAtOffset(MARGIN, yPosition);
 
-                // Agregar título y detalles del usuario
-                contentStream.showText("Reporte de Transacciones");
-                contentStream.newLine();
-                contentStream.newLine();
-                contentStream.showText("Usuario: " + resumen.getIdUsuario().getNombres() + " " + resumen.getIdUsuario().getApellidop());
-                contentStream.newLine();
-                contentStream.showText("Periodo: " + resumen.getPeriodo());
-                contentStream.newLine();
-                contentStream.newLine();
+            // Agregar título y detalles del usuario
+            contentStream.showText("Reporte de Transacciones");
+            contentStream.newLine();
+            contentStream.newLine();
+            contentStream.showText("Usuario: " + resumen.getIdUsuario().getNombres() + " "
+                    + resumen.getIdUsuario().getApellidop());
+            contentStream.newLine();
+            contentStream.showText("Periodo: " + resumen.getPeriodo());
+            contentStream.newLine();
+            contentStream.newLine();
+            contentStream.showText("Total de Ingresos: $" + resumen.getTotalIngresos());
+            contentStream.newLine();
+            contentStream.showText("Total de Egresos: $" + resumen.getTotalEgresos());
+            contentStream.newLine();
+            contentStream.newLine();
 
-                // Agregar resumen de ingresos y egresos
-                contentStream.showText("Total de Ingresos: $" + resumen.getTotalIngresos());
-                contentStream.newLine();
-                contentStream.showText("Total de Egresos: $" + resumen.getTotalEgresos());
-                contentStream.newLine();
-                contentStream.newLine();
+            // Agregar detalles de cada transacción
+            for (Transacciones transaccion : lstTransacciones) {
+                if (yPosition - LINE_HEIGHT * 4 < MARGIN) {
+                    // Terminar el flujo de contenido actual y crear una nueva página
+                    contentStream.endText();
+                    contentStream.close();
 
-                // Agregar detalles de cada transacción
-                for (Transacciones transaccion : lstTransacciones) {
-                    contentStream.showText("Transacción: " + transaccion.getDescripcion());
-                    contentStream.newLine();
-                    contentStream.showText("Fecha: " + transaccion.getFechaTransaccion());
-                    contentStream.newLine();
-                    contentStream.showText("Monto: $" + transaccion.getMonto());
-                    contentStream.newLine();
-                    contentStream.newLine();
+                    page = new PDPage();
+                    document.addPage(page);
+                    contentStream = new PDPageContentStream(document, page);
+                    contentStream.setFont(PDType1Font.HELVETICA, 12);
+                    contentStream.setLeading(LINE_HEIGHT);
+                    yPosition = START_Y;
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(MARGIN, yPosition);
                 }
 
-                contentStream.endText();
+                contentStream.showText("Transacción: " + transaccion.getDescripcion());
+                contentStream.newLine();
+                contentStream.showText("Fecha: " + transaccion.getFechaTransaccion());
+                contentStream.newLine();
+                contentStream.showText("Monto: $" + transaccion.getMonto());
+                contentStream.newLine();
+                contentStream.newLine();
+                yPosition -= LINE_HEIGHT * 4; // Descontar la altura utilizada
             }
+
+            contentStream.endText();
+            contentStream.close();
 
             // Guardar el documento en el OutputStream
             document.save(baos);
@@ -65,9 +86,7 @@ public class ReportePdfGenerate {
             // Devolver el contenido del PDF como array de bytes
             return baos.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Error generating PDF report", e);
         }
     }
-
 }

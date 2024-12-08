@@ -42,7 +42,7 @@ public class AuthenticationServiceImpl implements IAuthenticacionService {
                 .compact();
     }
 
-    private SecretKey getKey() {
+    public SecretKey getKey() {
         return Keys.hmacShaKeyFor(key.getEncoded());
     }
 

@@ -3,7 +3,9 @@ package utp.edu.codekion.finanzas.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -11,6 +13,8 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 @Entity
 @Table(name = "bancos")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Banco {
     @Id
     @ColumnDefault("nextval('bancos_id_seq'::regclass)")
@@ -34,5 +38,5 @@ public class Banco {
     @Size(max = 50)
     @Column(name = "sitio_web", length = 50)
     private String sitioWeb;
-
+    
 }

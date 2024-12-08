@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import utp.edu.codekion.finanzas.model.Banco;
 import utp.edu.codekion.finanzas.model.Cuenta;
 import utp.edu.codekion.finanzas.model.Presupuesto;
 import utp.edu.codekion.finanzas.model.Usuario;
