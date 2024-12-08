@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar out/artifacts/finanzas_jar/finanzas.jar
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/finanzas.jar
