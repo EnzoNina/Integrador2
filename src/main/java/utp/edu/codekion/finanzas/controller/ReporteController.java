@@ -37,7 +37,7 @@ public class ReporteController {
     public void generarReporte(@RequestBody FechasAndUsuarioDto fechasDto, HttpServletResponse response) {
 
         // Obtenemos lo necesario para el reporte
-        List<Transacciones> transaccionesLst = transaccionService.findByFechaTransaccionBetween(fechasDto.getFechaInicio(), fechasDto.getFechaFin());
+        List<Transacciones> transaccionesLst = transaccionService.findByFechaTransaccionBetweenAndUsuario(fechasDto.getFechaInicio(), fechasDto.getFechaFin(),Integer.valueOf(fechasDto.getId_usuario()));
         BigDecimal ingresos = transaccionService.totalIngresosEntreFechas(fechasDto.getFechaInicio(), fechasDto.getFechaFin(), Integer.valueOf(fechasDto.getId_usuario()));
         BigDecimal egresos = transaccionService.totalEgresosEntreFechas(fechasDto.getFechaInicio(), fechasDto.getFechaFin(), Integer.valueOf(fechasDto.getId_usuario()));
         Usuario usuario = usuarioService.findById(Integer.valueOf(fechasDto.getId_usuario()));
