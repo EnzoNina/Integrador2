@@ -48,6 +48,9 @@ public interface ITransaccionService {
     // Obtener transacciones entre rango de fechas
     List<Transacciones> findByFechaTransaccionBetween(LocalDate fechaInicio, LocalDate fechaFin);
 
+    // Obtener transacciones entre rango de fechas
+    List<Transacciones> findByFechaTransaccionBetweenAndUsuario(LocalDate fechaInicio, LocalDate fechaFin,Integer id_usuario);
+
     // Obtener total ingresos entre rango de fechas
     BigDecimal totalIngresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin, Integer id_usuario);
 

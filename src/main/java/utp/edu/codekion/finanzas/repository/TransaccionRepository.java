@@ -96,4 +96,7 @@ public interface TransaccionRepository extends JpaRepository<Transacciones, Inte
 
     @Query("SELECT SUM(t.monto) FROM Transacciones t WHERE t.fechaTransaccion BETWEEN ?1 AND ?2 and t.idCategoria.idTipoTra.id = 2 and t.idUsuario.id = ?3")
     BigDecimal totalEgresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin, Integer id_usuario);
+
+    @Query("SELECT t FROM Transacciones t WHERE t.fechaTransaccion BETWEEN ?1 AND ?2 AND t.idUsuario.id = ?3")
+    List<Transacciones> findByFechaTransaccionBetweenAndUsuario(LocalDate fechaInicio, LocalDate fechaFin, Integer idUsuario);
 }

@@ -86,6 +86,11 @@ public class TransaccionesServiceImpl implements ITransaccionService {
     }
 
     @Override
+    public List<Transacciones> findByFechaTransaccionBetweenAndUsuario(LocalDate fechaInicio, LocalDate fechaFin, Integer id_usuario) {
+        return transaccionRepository.findByFechaTransaccionBetweenAndUsuario(fechaInicio, fechaFin, id_usuario);
+    }
+
+    @Override
     public BigDecimal totalIngresosEntreFechas(LocalDate fechaInicio, LocalDate fechaFin,Integer id_usuario) {
         return transaccionRepository.totalIngresosEntreFechas(fechaInicio, fechaFin, id_usuario);
     }
